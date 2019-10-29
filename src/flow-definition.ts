@@ -1,25 +1,56 @@
 import { StepDefinition } from "./step-definition";
+import { Transition } from "./transition";
+import { FlowCondition } from "./flow-condition";
 
-export class FlowDefinition {
-    public id: any;
-    public description: string;
-    private _steps: { [key: string]: any } = {};
+export interface FlowDefinition {
+    readonly id: any;
+    description: string;
+    transitions: { [key: string]: Transition };
+    steps: { [key: string] : StepDefinition };
+    startStep: StepDefinition | null;
+    addStep: Function;
+}
 
-    constructor(id: any, description: string) {
-	this.id = id;
-	this.description = description;
-	this._steps = {};
-    }
+function createTransition(flowDefinition: FlowDefinition,
+			  origin: StepDefinition,
+			  destination: StepDefinition,
+			  condition = null): Transition {
+    return {
+	flowDefinition,
+	origin,
+	destination,
+	condition
+    };
+}
 
-    addStep(step: StepDefinition) {
-	this._steps[step.id] = step;
-    }
+function addStepInFlowAfter(flow: FlowDefinition,
+			    step: StepDefinition) {
+    return function(after: StepDefinition, condition = null) : Transition {
+	return createTransition(flow, after, step, condition);
+    };
+}
 
-    removeStepById(stepId: string) {
-	delete this._steps[stepId];
-    }
+function addStepInFlowBefore(flow: FlowDefinition,
+			     step: StepDefinition) {
+    return function(before: StepDefinition, condition = null) : Transition {
+	return createTransition(flow, step, before, condition);	
+    };
+}
 
-    get steps(): object {
-	return this._steps;
-    }
+
+export function createFlowDefinition(id: any, description: string): FlowDefinition {
+    return {
+	id,
+	description,
+	transitions: {},
+	steps: {},
+	startStep: null,
+        addStep: function(step: StepDefinition) {
+	    return {
+		after: addStepInFlowAfter(this, step),
+		before: addStepInFlowBefore(this, step)
+	    }
+	}
+    };
+
 }

@@ -1,9 +1,11 @@
-export class StepDefinition {
-    public id: string;
-    public name: string;
+export interface StepDefinition {
+    readonly id: string;
+    name: string;
+}
 
-    constructor(id: string, name: string) {
-	this.id = id;
-	this.name = name;
-    }
+export function createStepDefinition(id: string, name: string) : StepDefinition {
+    return {
+	id,
+	name
+    };
 }
