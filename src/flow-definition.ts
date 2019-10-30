@@ -93,6 +93,9 @@ export function createFlowDefinition(id: any, description: string): FlowDefiniti
 		beforeStepWithId: function(id: any, condition = null) {
 		    let before = getStepByIdInFlowOrFail(flow, id);
 		    return addStepInFlowBefore(flow, step)(before, condition);
+		},
+		done: function() {
+		    return flow;
 		}
 	    };
 	},
