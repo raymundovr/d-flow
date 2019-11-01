@@ -25,8 +25,26 @@ describe("FlowDefinition", () => {
     	let flow = createFlowDefinition('test', 'test')
     	    .setStartStep(createStepDefinition('start', 'start'))
     	    .addStep(createStepDefinition('a', 'a')).afterStepWithId('start');
-	expect(Object.keys(flow.steps).length).toBe(2);
-	expect(Object.keys(flow.transitions).length).toBe(1);
-	expect(Object.keys(flow.transitions)[0]).toBe('start-a');
+	expect(flow.steps.length).toBe(2);
+	expect(flow.transitions.length).toBe(1);
+	expect(flow.transitions[0].id).toBe('start-a');
+    });
+
+    test("::addStep().before()", () => {
+	let flow = createFlowDefinition('test', 'test')
+	    .setStartStep(createStepDefinition('start', 'start'))
+	    .addStep(createStepDefinition('a', 'a')).afterStepWithId('start')	    
+	    .addStep(createStepDefinition('b', 'b')).beforeStepWithId('a');
+	expect(flow.transitions.length).toBe(2);
+	expect(flow.transitions.map((t:any) => t.id)).toEqual(['start-a', 'b-a']);
+    });
+
+    test("::addStepBetween()", () => {
+	let flow = createFlowDefinition('test', 'test')
+	    .setStartStep(createStepDefinition('start', 'start'))
+	    .addStep(createStepDefinition('b', 'b')).afterStepWithId('start')	    
+	    .addStep(createStepDefinition('a', 'a')).betweenStepsWithId('start', 'b');
+	expect(flow.transitions.length).toBe(2);
+	expect(flow.transitions.map((t:any) => t.id)).toEqual(['start-a', 'a-b']);
     });
 });
