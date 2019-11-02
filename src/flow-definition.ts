@@ -1,5 +1,5 @@
 import { StepDefinition } from "./step-definition";
-import { Transition } from "./transition";
+import { Transition, createTransition } from "./transition";
 import { FlowCondition } from "./flow-condition";
 
 export interface FlowDefinition {
@@ -15,6 +15,34 @@ export interface FlowDefinition {
     getTransitionsFrom: Function;
     getTransitionsTo: Function;
     createTransition: Function;
+}
+
+/* Transitions */
+export function getTransitionInFlowByStepIds(flow: FlowDefinition, originId: any, destinationId: any): Transition | null {
+    return flow.transitions.find(
+        (t: Transition) => t.origin.id === originId && t.destination.id === destinationId) || null;
+}
+
+export function getTransitionsInFlowFromStepById(flow: FlowDefinition, id: any): Array<Transition> | [] {
+    return flow.transitions.filter(
+        (t: Transition) => t.origin.id === id
+    );
+}
+
+export function getTransitionsInFlowToStepById(flow: FlowDefinition, id: any): Array<Transition> | [] {
+    return flow.transitions.filter(
+        (t: Transition) => t.destination.id === id
+    );
+}
+
+export function addTransitionToFlow(flow: FlowDefinition, transition: Transition) {
+    flow.transitions.push(transition);
+    return flow;
+}
+
+export function removeTransitionInFlowById(flow: FlowDefinition, id: any) {
+    flow.transitions = flow.transitions.filter((t: Transition) => t.id !== id);
+    return flow;
 }
 
 /* Steps */
@@ -71,48 +99,6 @@ export function addStepInFlowBetween(flow: FlowDefinition,
 
 export function getFlowStepById(flow: FlowDefinition, stepId: any): StepDefinition | null {
     return flow.steps.find((s: StepDefinition) => s.id === stepId) || null;
-}
-
-/* Transitions */
-
-export function getTransitionInFlowByStepIds(flow: FlowDefinition, originId: any, destinationId: any): Transition | null {
-    return flow.transitions.find(
-        (t: Transition) => t.origin.id === originId && t.destination.id === destinationId) || null;
-}
-
-export function getTransitionsInFlowFromStepById(flow: FlowDefinition, id: any): Array<Transition> | [] {
-    return flow.transitions.filter(
-        (t: Transition) => t.origin.id === id
-    );
-}
-
-export function getTransitionsInFlowToStepById(flow: FlowDefinition, id: any): Array<Transition> | [] {
-    return flow.transitions.filter(
-        (t: Transition) => t.destination.id === id
-    );
-}
-
-export function addTransitionToFlow(flow: FlowDefinition, transition: Transition) {
-    flow.transitions.push(transition);
-    return flow;
-}
-
-export function createTransition(flowDefinition: FlowDefinition,
-    origin: StepDefinition,
-    destination: StepDefinition,
-    condition?: FlowCondition): Transition {
-    return {
-        id: `${origin.id}-${destination.id}`,
-        flowDefinition,
-        origin,
-        destination,
-        condition
-    };
-}
-
-export function removeTransitionInFlowById(flow: FlowDefinition, id: any) {
-    flow.transitions = flow.transitions.filter((t: Transition) => t.id !== id);
-    return flow;
 }
 
 export function setFlowStartStep(flow: FlowDefinition,

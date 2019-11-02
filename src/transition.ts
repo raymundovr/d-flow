@@ -9,3 +9,16 @@ export interface Transition {
     readonly destination: StepDefinition;
     condition?: FlowCondition;
 }
+
+export function createTransition(flowDefinition: FlowDefinition,
+    origin: StepDefinition,
+    destination: StepDefinition,
+    condition?: FlowCondition): Transition {
+    return {
+        id: `${origin.id}-${destination.id}`,
+        flowDefinition,
+        origin,
+        destination,
+        condition
+    };
+}
