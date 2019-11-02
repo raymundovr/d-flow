@@ -7,5 +7,5 @@ export interface Transition {
     readonly flowDefinition: FlowDefinition;
     readonly origin: StepDefinition;
     readonly destination: StepDefinition;
-    condition: FlowCondition | null;
+    condition?: FlowCondition;
 }
