@@ -1,23 +1,5 @@
+import { Access, AccessType, createAccess } from "./step-access";
 
-export enum AccessType {
-    USER = "U",
-    ROLE = "R",
-    GROUP = "G"
-}
-
-interface Access {
-    name: string;
-    accessType: AccessType;
-    granted: boolean;
-}
-
-function createAccess(name: string, accessType: AccessType, granted: boolean): Access {
-    return {
-        name,
-        accessType,
-        granted
-    };
-}
 
 export class StepDefinition {
     private _id: any;
