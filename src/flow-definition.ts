@@ -75,7 +75,7 @@ export function getFlowStepById(flow: FlowDefinition, stepId: any): StepDefiniti
 }
 
 export function getStepByIdInFlowOrFail(flow: FlowDefinition, id: any) {
-    let step = flow.getStepById(id);
+    let step = flow.getStep(id);
     if (!step) {
         throw new Error(`Cannot find step with ID ${id}`);
     }
@@ -102,7 +102,7 @@ export class FlowDefinition {
         return this._steps;
     }
 
-    getStepById(id: any) {
+    getStep(id: any) {
         return this.steps.find((step: StepDefinition) => step.id === id) || null;
     }
 
@@ -137,9 +137,13 @@ export class FlowDefinition {
         return this;
     }
 
-    addStep(step: StepDefinition): object {
-        this.addStep(step);
-        let flow = this;
+    addStep(step: StepDefinition): {
+        afterStep: Function, beforeStep: Function,
+        betweenSteps: Function, afterStepWithId: Function,
+        beforeStepWithId: Function,
+        betweenStepsWithId: Function, done: Function
+    } {
+        let flow = this.appendStep(step);
         return {
             afterStep: function(after: StepDefinition, condition?: FlowCondition) {
                 return addStepInFlowAfter(flow, step, after, condition);
