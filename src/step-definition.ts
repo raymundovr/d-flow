@@ -48,24 +48,28 @@ export class StepDefinition {
         return this;
     }
 
-    get fields() {
+    get fields(): Array<FieldDefinition> {
         return this._fields;
     }
 
-    addField(field: FieldDefinition) {
+    addField(field: FieldDefinition): StepDefinition {
         this._fields.push(field);
         return this;
     }
 
-    removeFieldWithId(id: any) {
+    removeFieldWithId(id: any): StepDefinition {
         this._fields = this._fields.filter((f: FieldDefinition) => f.id !== id);
         return this;
     }
 
-    replaceField(field: FieldDefinition) {
+    replaceField(field: FieldDefinition): StepDefinition {
         this.removeFieldWithId(field.id);
         this.addField(field);
         return this;
+    }
+
+    getField(id: any): FieldDefinition | null {
+        return this._fields.find((f: FieldDefinition) => f.id === id) || null;
     }
 }
 
