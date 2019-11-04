@@ -2,21 +2,6 @@ import { StepDefinition } from "./step-definition";
 import { Transition, createTransition } from "./transition";
 import { FlowCondition } from "./flow-condition";
 
-// export interface FlowDefinitionInterface {
-//     readonly id: any;
-//     description: string;
-//     transitions: Array<Transition>;
-//     steps: Array<StepDefinition>;
-//     startStep: StepDefinition | null;
-//     getStep: Function;
-//     addStep: Function;
-//     setStartStep: Function;
-//     getTransition: Function;
-//     getTransitionsFrom: Function;
-//     getTransitionsTo: Function;
-//     createTransition: Function;
-// }
-
 /* Transitions */
 export function getTransitionInFlowByStepIds(flow: FlowDefinition, originId: any, destinationId: any): Transition | null {
     return flow.transitions.find(
@@ -82,6 +67,16 @@ export function getStepByIdInFlowOrFail(flow: FlowDefinition, id: any) {
     return step;
 }
 
+interface AddStepInterface {
+    afterStep: Function;
+    beforeStep: Function;
+    betweenSteps: Function;
+    afterStepWithId: Function;
+    beforeStepWithId: Function;
+    betweenStepsWithId: Function;
+    done: Function;
+}
+
 export class FlowDefinition {
     private _id: any;
     public description: string;
@@ -137,12 +132,7 @@ export class FlowDefinition {
         return this;
     }
 
-    addStep(step: StepDefinition): {
-        afterStep: Function, beforeStep: Function,
-        betweenSteps: Function, afterStepWithId: Function,
-        beforeStepWithId: Function,
-        betweenStepsWithId: Function, done: Function
-    } {
+    addStep(step: StepDefinition): AddStepInterface {
         let flow = this.appendStep(step);
         return {
             afterStep: function(after: StepDefinition, condition?: FlowCondition) {

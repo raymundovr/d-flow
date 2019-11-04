@@ -1,14 +1,17 @@
 import { Access, AccessType, createAccess } from "./step-access";
-
+import { FieldDefinition } from "./field-definition";
 
 export class StepDefinition {
     private _id: any;
     public name: string;
-    private _accessList: Access[] = [];
+    private _accessList: Access[];
+    private _fields: FieldDefinition[];
 
-    constructor(id: any, name: string) {
+    constructor(id: any, name: string, fields: Array<FieldDefinition> = [], access: Array<Access> = []) {
         this._id = id;
         this.name = name;
+        this._fields = fields;
+        this._accessList = access;
     }
 
     get id() {
@@ -42,6 +45,26 @@ export class StepDefinition {
         let access = createAccess(name, accessType, false);
         this._accessList = this.filterAccessInStep(name, accessType);
         this._accessList.push(access);
+        return this;
+    }
+
+    get fields() {
+        return this._fields;
+    }
+
+    addField(field: FieldDefinition) {
+        this._fields.push(field);
+        return this;
+    }
+
+    removeFieldWithId(id: any) {
+        this._fields = this._fields.filter((f: FieldDefinition) => f.id !== id);
+        return this;
+    }
+
+    replaceField(field: FieldDefinition) {
+        this.removeFieldWithId(field.id);
+        this.addField(field);
         return this;
     }
 }
