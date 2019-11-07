@@ -1,24 +1,21 @@
 import { Access, AccessType, createAccess } from "./step-access";
-import { FieldDefinition } from "./field-definition";
 
-export class StepDefinition {
-    private _id: any;
+export abstract class StepDefinition {
+    protected _id: any;
+    protected _accessList: Access[];
     public name: string;
-    private _accessList: Access[];
-    private _fields: FieldDefinition[];
 
-    constructor(id: any, name: string, fields: Array<FieldDefinition> = [], access: Array<Access> = []) {
+    constructor(id: any, name: string, access: Array<Access> = []) {
         this._id = id;
         this.name = name;
-        this._fields = fields;
         this._accessList = access;
     }
 
-    get id() {
+    get id(): any {
         return this._id;
     }
 
-    get accessList() {
+    get accessList(): Access[] {
         return this._accessList;
     }
 
@@ -47,36 +44,4 @@ export class StepDefinition {
         this._accessList.push(access);
         return this;
     }
-
-    get fields(): Array<FieldDefinition> {
-        return this._fields;
-    }
-
-    addField(field: FieldDefinition): StepDefinition {
-        this._fields.push(field);
-        return this;
-    }
-
-    removeFieldWithId(id: any): StepDefinition {
-        this._fields = this._fields.filter((f: FieldDefinition) => f.id !== id);
-        return this;
-    }
-
-    replaceField(field: FieldDefinition): StepDefinition {
-        this.removeFieldWithId(field.id);
-        this.addField(field);
-        return this;
-    }
-
-    getField(id: any): FieldDefinition | null {
-        return this._fields.find((f: FieldDefinition) => f.id === id) || null;
-    }
-}
-
-
-export function createStepDefinition(id: string, name: string): StepDefinition {
-    return new StepDefinition(
-        id,
-        name
-    );
 }

@@ -1,5 +1,5 @@
-import { FlowDefinition, createFlowDefinition } from '../src/flow-definition';
-import { StepDefinition, createStepDefinition } from '../src/step-definition';
+import { createFlowDefinition } from '../src/flow-definition';
+import { createDataInputStep } from '../src/data-input-step';
 
 describe("FlowDefinition", () => {
     test("::createFlowDefinition()", () => {
@@ -14,7 +14,7 @@ describe("FlowDefinition", () => {
     });
 
     test("::setStartStep()", () => {
-        let start = createStepDefinition('step', 'Step');
+        let start = createDataInputStep('step', 'Step');
         let flow = createFlowDefinition('test', 'Test').
             setStartStep(start);
         expect(flow.startStep).toBe(start);
@@ -23,8 +23,8 @@ describe("FlowDefinition", () => {
 
     test("::addStep().after()", () => {
         let flow = createFlowDefinition('test', 'test')
-            .setStartStep(createStepDefinition('start', 'start'))
-            .addStep(createStepDefinition('a', 'a')).afterStepWithId('start');
+            .setStartStep(createDataInputStep('start', 'start'))
+            .addStep(createDataInputStep('a', 'a')).afterStepWithId('start');
         expect(flow.steps.length).toBe(2);
         expect(flow.transitions.length).toBe(1);
         expect(flow.transitions[0].id).toBe('start-a');
@@ -32,33 +32,33 @@ describe("FlowDefinition", () => {
 
     test("::addStep().before()", () => {
         let flow = createFlowDefinition('test', 'test')
-            .setStartStep(createStepDefinition('start', 'start'))
-            .addStep(createStepDefinition('a', 'a')).afterStepWithId('start')
-            .addStep(createStepDefinition('b', 'b')).beforeStepWithId('a');
+            .setStartStep(createDataInputStep('start', 'start'))
+            .addStep(createDataInputStep('a', 'a')).afterStepWithId('start')
+            .addStep(createDataInputStep('b', 'b')).beforeStepWithId('a');
         expect(flow.transitions.length).toBe(2);
         expect(flow.transitions.map((t: any) => t.id)).toEqual(['start-a', 'b-a']);
     });
 
     test("::addStep().between()", () => {
         let flow = createFlowDefinition('test', 'test')
-            .setStartStep(createStepDefinition('start', 'start'))
-            .addStep(createStepDefinition('b', 'b')).afterStepWithId('start')
-            .addStep(createStepDefinition('a', 'a')).betweenStepsWithId('start', 'b');
+            .setStartStep(createDataInputStep('start', 'start'))
+            .addStep(createDataInputStep('b', 'b')).afterStepWithId('start')
+            .addStep(createDataInputStep('a', 'a')).betweenStepsWithId('start', 'b');
         expect(flow.transitions.length).toBe(2);
         expect(flow.transitions.map((t: any) => t.id)).toEqual(['start-a', 'a-b']);
     });
 
     test("::getStep()", () => {
         let flow = createFlowDefinition('test', 'test')
-            .addStep(createStepDefinition('start', 'start')).done();
+            .addStep(createDataInputStep('start', 'start')).done();
         expect(flow.getStep('start')).not.toBeNull();
         expect(flow.getStep('none')).toBeNull();
     });
 
     test("::createTransition()", () => {
         let flow = createFlowDefinition('test', 'test')
-            .addStep(createStepDefinition('a', 'a')).done()
-            .addStep(createStepDefinition('b', 'b')).done()
+            .addStep(createDataInputStep('a', 'a')).done()
+            .addStep(createDataInputStep('b', 'b')).done()
             .createTransition('a', 'b');
         expect(flow.transitions.length).toBe(1);
         expect(flow.transitions[0].id).toBe('a-b');
@@ -66,8 +66,8 @@ describe("FlowDefinition", () => {
 
     test("::getTransitions()", () => {
         let flow = createFlowDefinition('test', 'test')
-            .addStep(createStepDefinition('a', 'a')).done()
-            .addStep(createStepDefinition('b', 'b')).done()
+            .addStep(createDataInputStep('a', 'a')).done()
+            .addStep(createDataInputStep('b', 'b')).done()
             .createTransition('a', 'b');
         expect(flow.getTransition('a', 'b')).not.toBeNull();
         expect(flow.getTransitionsFrom('a').length).toBe(1);
