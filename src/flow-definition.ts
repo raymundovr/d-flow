@@ -1,6 +1,6 @@
-import { StepDefinition } from "./step-definition";
+import StepDefinition from "./step-definition";
 import { Transition, createTransition } from "./transition";
-import { FlowCondition } from "./flow-condition";
+import FlowCondition from "./flow-condition";
 
 /* Transitions */
 export function getTransitionInFlowByStepIds(flow: FlowDefinition, originId: any, destinationId: any): Transition | null {
@@ -77,7 +77,7 @@ interface AddStepInterface {
     done: Function;
 }
 
-export class FlowDefinition {
+export default class FlowDefinition {
     private _id: any;
     public description: string;
     private _transitions: Transition[] = [];

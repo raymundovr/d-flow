@@ -1,4 +1,4 @@
-import { StepDefinition } from "./step-definition";
+import StepDefinition from "./step-definition";
 import { Access } from "./step-access";
 import { FieldDefinition } from "./field-definition";
 

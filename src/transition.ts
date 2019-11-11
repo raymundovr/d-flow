@@ -1,6 +1,6 @@
-import { StepDefinition } from "./step-definition";
-import { FlowDefinition } from "./flow-definition";
-import { FlowCondition } from "./flow-condition";
+import StepDefinition from "./step-definition";
+import FlowDefinition from "./flow-definition";
+import FlowCondition from "./flow-condition";
 
 export interface Transition {
     readonly id: any;
