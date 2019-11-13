@@ -1,12 +1,14 @@
 import StepDefinition from "./step-definition";
 import { Access } from "./step-access";
 import { FieldDefinition } from "./field-definition";
+import { FlowStatus } from "./flow-status";
 
 export class DataInputStep extends StepDefinition {
     private _fields: FieldDefinition[];
 
-    constructor(id: any, name: string, access: Array<Access> = [], fields: Array<FieldDefinition> = []) {
-        super(id, name, access);
+    constructor(id: any, name: string, access: Array<Access> = [],
+        status: FlowStatus = FlowStatus.Active, fields: Array<FieldDefinition> = []) {
+        super(id, name, access, status);
         this._fields = fields;
 
     }
@@ -37,11 +39,14 @@ export class DataInputStep extends StepDefinition {
 }
 
 
-export function createDataInputStep(id: any, name: string, access?: Access[], fields?: FieldDefinition[]): StepDefinition {
+export function createDataInputStep(id: any, name: string, access: Access[] = [],
+    status: FlowStatus = FlowStatus.Active,
+    fields?: FieldDefinition[]): StepDefinition {
     return new DataInputStep(
         id,
         name,
         access,
+        status,
         fields
     );
 }

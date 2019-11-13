@@ -7,9 +7,7 @@ export default abstract class StepDefinition {
     public name: string;
     public flowStatus: FlowStatus;
 
-    constructor(id: any, name: string,
-        status: FlowStatus = FlowStatus.Active,
-        access: Array<Access> = []) {
+    constructor(id: any, name: string, access: Array<Access> = [], status: FlowStatus = FlowStatus.Active) {
         this._id = id;
         this.name = name;
         this._accessList = access;

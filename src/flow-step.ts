@@ -16,11 +16,11 @@ export default class FlowStep {
         this.data = data;
     }
 
-    get flow() {
+    get flow(): Flow {
         return this._flow;
     }
 
-    get definition() {
+    get definition(): StepDefinition {
         return this._definition;
     }
 

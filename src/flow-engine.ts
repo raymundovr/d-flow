@@ -1,8 +1,8 @@
-import Flow from './flow';
-import FlowDefinition from './flow-definition';
-import FlowStep from './flow-step';
-import { FlowStatus } from './flow-status';
-import StepDefinition from './step-definition';
+import Flow from "./flow";
+import FlowDefinition from "./flow-definition";
+import FlowStep from "./flow-step";
+import { FlowStatus } from "./flow-status";
+import StepDefinition from "./step-definition";
 
 function haveVisitedStep(flow: Flow, stepDefinition: StepDefinition): boolean {
     return !!flow.steps.find((s: FlowStep) => s.definition.id === stepDefinition.id);
@@ -29,9 +29,10 @@ export function advance(flow: Flow, stepDefinition: StepDefinition, data: any): 
         throw new Error(`Cannot advance Flow: Advance can only be applied to Active Flows`);
     }
 
-    let transition = flow.definition.getTransition(flow.currentStep.definition.id, stepDefinition.id);
+    let transition = flow.definition.getTransition(flow.currentStep.definition.id,
+        stepDefinition.id);
     if (!transition) {
-        throw new Error(`Cannot advance Flow: No transition from Current Step to Step ${step.definition.id} found`);
+        throw new Error(`Cannot advance Flow: No transition from Current Step to Step ${stepDefinition.id} found`);
     }
 
     if (haveVisitedStep(flow, stepDefinition)) {
