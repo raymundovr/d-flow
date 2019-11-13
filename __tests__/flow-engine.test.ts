@@ -22,6 +22,6 @@ describe("FlowEngine", () => {
         let flow = Engine.createFlow(flowDefinition);
         flow = Engine.start(flow, {});
         expect(flow.currentStep).not.toBeNull();
-        expect(flow.currentStep!.definition).toMatchObject(flowDefinition.startStep);
+        expect(flow.currentStep!.definitiontoMatchObject(flowDefinition.startStep);
     });
 });
