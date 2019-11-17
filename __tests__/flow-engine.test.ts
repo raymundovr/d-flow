@@ -1,27 +1,57 @@
 import * as Engine from '../src/flow-engine';
 import { createFlowDefinition } from '../src/flow-definition';
 import { FlowStatus } from '../src/flow-status';
-import { createDataInputStep } from "../src/data-input-step";
+import { createDataInputStep } from '../src/data-input-step';
+import { createFieldDefinition } from '../src/field-definition';
+import { createFlowCondition } from '../src/flow-condition';
 
 describe("FlowEngine", () => {
-    const flowDefinition = createFlowDefinition("test", "test")
+    const simpleFlow = createFlowDefinition("simple", "simple")
         .setStartStep(createDataInputStep("start", "Start Step"))
         .addStep(createDataInputStep("a", "Step A")).afterStepWithId("start")
-        .addStep(createDataInputStep("b", "Step B")).afterStepWithId("a")
+        .addStep(
+            createDataInputStep("b", "Step B", FlowStatus.Completed)
+        ).afterStepWithId("a")
+        ;
+    const decisionFlow = createFlowDefinition("decision", "decision")
+        .setStartStep(createDataInputStep("start", "Start Decision"))
+        .addStep(
+            createDataInputStep("a", "Step A")
+                .addField(createFieldDefinition('fa', 'number', 'Field A'))
+        ).afterStepWithId("start")
+        .addStep(
+            createDataInputStep("b1", "Step B1")
+        ).afterStepWithId("a", createFlowCondition('fa', 10, 'eq'))
         ;
 
     it("Should create a Flow from a FlowDefinition", () => {
-        let flow = Engine.createFlow(flowDefinition);
+        let flow = Engine.create(simpleFlow);
         expect(flow.status).toBe(FlowStatus.Created);
         expect(flow.id).not.toBeNull();
         expect(flow.createdAt).toBeInstanceOf(Date);
         expect(flow.currentStep).toBeNull();
     });
 
-    it("Should start a flow", () => {
-        let flow = Engine.createFlow(flowDefinition);
-        flow = Engine.start(flow, {});
+    it("Should start a Flow", () => {
+        let flow = Engine.start(
+            Engine.create(simpleFlow),
+            {}
+        );
         expect(flow.currentStep).not.toBeNull();
-        expect(flow.currentStep!.definitiontoMatchObject(flowDefinition.startStep);
+        expect(flow.currentStep!.definition).toMatchObject(simpleFlow.startStep);
+    });
+
+    it("Should complete a Flow START -> A -> B", () => {
+        let flow = Engine.create(simpleFlow);
+        let stepA = simpleFlow.getStep('a');
+        let stepB = simpleFlow.getStep('b');
+        flow = Engine.start(flow, {});
+        flow = Engine.submit(flow, {}, stepA);
+        expect(flow.currentStep).not.toBeNull();
+        expect(flow.currentStep!.definition).toMatchObject(stepA);
+        flow = Engine.submit(flow, {}, stepB);
+        expect(flow.currentStep).not.toBeNull();
+        expect(flow.currentStep!.definition).toMatchObject(stepB);
+        expect(flow.status).toBe(FlowStatus.Completed);
     });
 });

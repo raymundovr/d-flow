@@ -6,9 +6,9 @@ import { FlowStatus } from "./flow-status";
 export class DataInputStep extends StepDefinition {
     private _fields: FieldDefinition[];
 
-    constructor(id: any, name: string, access: Array<Access> = [],
+    constructor(id: any, name: string,
         status: FlowStatus = FlowStatus.Active, fields: Array<FieldDefinition> = []) {
-        super(id, name, access, status);
+        super(id, name, status);
         this._fields = fields;
 
     }
@@ -39,13 +39,12 @@ export class DataInputStep extends StepDefinition {
 }
 
 
-export function createDataInputStep(id: any, name: string, access: Access[] = [],
+export function createDataInputStep(id: any, name: string,
     status: FlowStatus = FlowStatus.Active,
-    fields?: FieldDefinition[]): StepDefinition {
+    fields?: FieldDefinition[]): DataInputStep {
     return new DataInputStep(
         id,
         name,
-        access,
         status,
         fields
     );
