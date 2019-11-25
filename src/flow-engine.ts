@@ -1,7 +1,6 @@
 import Flow from './flow';
 import FlowDefinition from './flow-definition';
 import FlowStep from './flow-step';
-import Result from './process-result';
 import { FlowStatus } from './flow-status';
 import StepDefinition from './step-definition';
 
@@ -39,8 +38,13 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
 
     let transition = flow.definition.getTransition(flow.currentStep.definition.id,
         stepDefinition.id);
+
     if (!transition) {
-        throw new Error(`Cannot advance Flow ${flow.id}: No transition from Current Step to Step ${stepDefinition.id} found`);
+        throw new Error(`Cannot advance Flow ${flow.id}: No transition from current step to step ${stepDefinition.id} found`);
+    }
+
+    if (transition.condition && !transition.condition.satisfies(data)) {
+        throw new Error(`Cannot advance Flow ${flow.id}: Transition condition from current step to step ${stepDefinition.id} is not satisfied`);
     }
 
     if (haveVisitedStep(flow, stepDefinition)) {

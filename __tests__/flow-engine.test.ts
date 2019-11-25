@@ -3,7 +3,7 @@ import { createFlowDefinition } from '../src/flow-definition';
 import { FlowStatus } from '../src/flow-status';
 import { createDataInputStep } from '../src/data-input-step';
 import { createFieldDefinition } from '../src/field-definition';
-import { createFlowCondition } from '../src/flow-condition';
+import { equals } from '../src/object-conditions';
 
 describe("FlowEngine", () => {
     const simpleFlow = createFlowDefinition("simple", "simple")
@@ -21,7 +21,7 @@ describe("FlowEngine", () => {
         ).afterStepWithId("start")
         .addStep(
             createDataInputStep("b1", "Step B1")
-        ).afterStepWithId("a", createFlowCondition('fa', 10, 'eq'))
+        ).afterStepWithId("a", equals('fa', 10))
         ;
 
     it("Should create a Flow from a FlowDefinition", () => {
@@ -53,5 +53,16 @@ describe("FlowEngine", () => {
         expect(flow.currentStep).not.toBeNull();
         expect(flow.currentStep!.definition).toMatchObject(stepB);
         expect(flow.status).toBe(FlowStatus.Completed);
+    });
+
+    it("Should complete a flow on a decision branch based on a condition START -> A -> (condition) -> B1", () => {
+        let flow = Engine.create(decisionFlow);
+        let stepA = decisionFlow.getStep('a');
+        let stepB1 = decisionFlow.getStep('b1');
+        flow = Engine.start(flow, {});
+        flow = Engine.submit(flow, {}, stepA);
+        flow = Engine.submit(flow, { fa: 10 }, stepB1);
+        expect(flow.currentStep).not.toBeNull();
+        expect(flow.currentStep!.definition).toMatchObject(stepB1);
     });
 });

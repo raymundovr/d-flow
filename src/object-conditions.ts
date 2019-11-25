@@ -1,7 +1,3 @@
-export default interface FlowCondition {
-    satisfies(data: any): boolean;
-}
-
 export function equals(field: string, compareTo: any) {
     return {
         satisfies: function(data: any): boolean {
