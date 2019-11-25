@@ -2,7 +2,7 @@ import StepDefinition from "./step-definition";
 import FlowDefinition from "./flow-definition";
 import FlowCondition from "./flow-condition";
 
-export interface Transition {
+export default interface Transition {
     readonly id: any;
     readonly flowDefinition: FlowDefinition;
     readonly origin: StepDefinition;

@@ -65,4 +65,8 @@ describe("FlowEngine", () => {
         expect(flow.currentStep).not.toBeNull();
         expect(flow.currentStep!.definition).toMatchObject(stepB1);
     });
+
+    it("Should complete a set of parallel steps correctly in order to advance", () => {
+
+    });
 });

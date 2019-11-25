@@ -1,5 +1,5 @@
 import StepDefinition from "./step-definition";
-import { Transition, createTransition } from "./transition";
+import Transition, { createTransition } from "./transition";
 import FlowCondition from "./flow-condition";
 
 /* Transitions */

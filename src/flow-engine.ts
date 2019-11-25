@@ -3,9 +3,16 @@ import FlowDefinition from './flow-definition';
 import FlowStep from './flow-step';
 import { FlowStatus } from './flow-status';
 import StepDefinition from './step-definition';
+import Transition from './transition';
 
 function haveVisitedStep(flow: Flow, stepDefinition: StepDefinition): boolean {
     return !!flow.steps.find((s: FlowStep) => s.definition.id === stepDefinition.id);
+}
+
+function isInParallelBranch(transition: Transition) {
+    let transitionsToInspect = transition.flowDefinition.getTransitionsFrom(transition.origin.id);
+    return transitionsToInspect.filter((t: Transition) => t.id !== transition.id)
+        .every((t: Transition) => t.condition === transition.condition);
 }
 
 export function create(definition: FlowDefinition): Flow {
