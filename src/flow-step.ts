@@ -5,15 +5,17 @@ export default class FlowStep {
     private _flow: Flow
     private _definition: StepDefinition;
     private _flowTag: number;
+    private _origin: FlowStep | null;
     public completedAt: Date | null;
     public data: any;
 
-    constructor(flow: Flow, definition: StepDefinition, data: any) {
+    constructor(flow: Flow, definition: StepDefinition, data: any, origin: FlowStep | null) {
         this._flow = flow;
         this._flowTag = flow.tag;
         this._definition = definition;
         this.completedAt = null;
         this.data = data;
+        this._origin = origin;
     }
 
     get flow(): Flow {
@@ -26,5 +28,9 @@ export default class FlowStep {
 
     get flowTag(): number {
         return this._flowTag;
+    }
+
+    get origin(): FlowStep | null {
+        return this._origin;
     }
 }

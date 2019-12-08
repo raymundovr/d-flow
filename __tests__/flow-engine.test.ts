@@ -24,6 +24,17 @@ describe("FlowEngine", () => {
         ).afterStepWithId("a", equals('fa', 10))
         ;
 
+    const parallelFlow = createFlowDefinition("parallel", "parallel")
+        .setStartStep(createDataInputStep("start", "Start Parallel"))
+        .addStep(createDataInputStep("a1", "A1")).afterStepWithId("start")
+        .addStep(createDataInputStep("a2", "A2")).afterStepWithId("start")
+        .addStep(createDataInputStep("a3", "A3")).afterStepWithId("start")
+        .addStep(createDataInputStep("b", "B")).done()
+        .createTransition("a1", "b")
+        .createTransition("a2", "b")
+        .createTransition("a3", "b")
+        ;
+
     it("Should create a Flow from a FlowDefinition", () => {
         let flow = Engine.create(simpleFlow);
         expect(flow.status).toBe(FlowStatus.Created);
@@ -67,6 +78,9 @@ describe("FlowEngine", () => {
     });
 
     it("Should complete a set of parallel steps correctly in order to advance", () => {
-
+        let flow = Engine.create(parallelFlow);
+        flow = Engine.start(flow, {});
+        flow = Engine.submit(flow, {}, parallelFlow.getStep('a1'));
+        expect(() => Engine.submit(flow, {}, parallelFlow.getStep('b'))).toThrow();
     });
 });

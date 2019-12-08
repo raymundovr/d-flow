@@ -11,8 +11,16 @@ function haveVisitedStep(flow: Flow, stepDefinition: StepDefinition): boolean {
 
 function isInParallelBranch(transition: Transition) {
     let transitionsToInspect = transition.flowDefinition.getTransitionsFrom(transition.origin.id);
-    return transitionsToInspect.filter((t: Transition) => t.id !== transition.id)
-        .every((t: Transition) => t.condition === transition.condition);
+    return transitionsToInspect.filter((t: Transition) => t.id !== transition.id).every((t: Transition) => t.condition === transition.condition);
+}
+
+function canAdvanceInParallelBranch(transition: Transition, flow: Flow) {
+    let destinationsToInspect = transition.flowDefinition.getTransitionsFrom(transition.origin.id)
+        .filter((t: Transition) => t.id !== transition.id)
+        .map((t: Transition) => t.destination);
+    return destinationsToInspect.every((d: StepDefinition) =>
+        haveVisitedStep(flow, d)
+    );
 }
 
 export function create(definition: FlowDefinition): Flow {
@@ -25,7 +33,9 @@ export function start(flow: Flow, data: any): Flow {
     if (!flow.definition.startStep) {
         throw new Error(`Cannot start flow ${flow.id}: Start step not defined`);
     }
-    flow.currentStep = new FlowStep(flow, flow.definition.startStep, data);
+    flow.currentStep = new FlowStep(
+        flow, flow.definition.startStep, data, null
+    );
     flow.currentStep.completedAt = new Date();
     flow.status = FlowStatus.Active;
     return flow;
@@ -53,12 +63,28 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
     if (transition.condition && !transition.condition.satisfies(data)) {
         throw new Error(`Cannot advance Flow ${flow.id}: Transition condition from current step to step ${stepDefinition.id} is not satisfied`);
     }
+    ;
+    if (flow.currentStep && flow.currentStep.origin) {
+        //Evaluate parallelism
+        let prevTransition = flow.definition.getTransition(
+            flow.currentStep.origin.definition.id, flow.currentStep.definition.id);
+        if (prevTransition === null) {
+            throw new Error("Cannot determine transition to evaluate parallelism");
+        }
+        if (
+            isInParallelBranch(prevTransition) &&
+            !canAdvanceInParallelBranch(prevTransition, flow)) {
+            throw new Error(`Cannot advance Flow ${flow.id}: Flow is in parallel branch and cannot yet advance`);
+        }
+    }
 
     if (haveVisitedStep(flow, stepDefinition)) {
         flow.updateTag();
     }
 
-    flow.currentStep = new FlowStep(flow, stepDefinition, data);
+    flow.currentStep = new FlowStep(
+        flow, stepDefinition, data, flow.currentStep
+    );
     flow.status = stepDefinition.flowStatus || flow.status;
     flow.lastTransition = transition;
     return flow;
