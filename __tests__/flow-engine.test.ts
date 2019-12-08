@@ -82,5 +82,11 @@ describe("FlowEngine", () => {
         flow = Engine.start(flow, {});
         flow = Engine.submit(flow, {}, parallelFlow.getStep('a1'));
         expect(() => Engine.submit(flow, {}, parallelFlow.getStep('b'))).toThrow();
+        flow = Engine.submit(flow, {}, parallelFlow.getStep('a2'));
+        flow = Engine.submit(flow, {}, parallelFlow.getStep('a3'));
+        flow = Engine.submit(flow, {}, parallelFlow.getStep('b'));
+        expect(flow.currentStep!.definition).toMatchObject(
+            parallelFlow.getStep('b')
+        );
     });
 });

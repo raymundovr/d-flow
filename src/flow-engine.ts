@@ -10,13 +10,13 @@ function haveVisitedStep(flow: Flow, stepDefinition: StepDefinition): boolean {
 }
 
 function isInParallelBranch(transition: Transition) {
-    let transitionsToInspect = transition.flowDefinition.getTransitionsFrom(transition.origin.id);
-    return transitionsToInspect.filter((t: Transition) => t.id !== transition.id).every((t: Transition) => t.condition === transition.condition);
+    let transitionsToInspect = transition.flowDefinition.getTransitionsFrom(transition.origin.id).filter((t: Transition) => t.id !== transition.id)
+    return transitionsToInspect.length > 0 ? transitionsToInspect.every((t: Transition) => t.condition === transition.condition) : false;
 }
 
 function canAdvanceInParallelBranch(transition: Transition, flow: Flow) {
     let destinationsToInspect = transition.flowDefinition.getTransitionsFrom(transition.origin.id)
-        .filter((t: Transition) => t.id !== transition.id)
+        .filter((t: Transition) => t) //Fix this Typescript error
         .map((t: Transition) => t.destination);
     return destinationsToInspect.every((d: StepDefinition) =>
         haveVisitedStep(flow, d)
@@ -53,17 +53,8 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
         throw new Error(`Cannot advance Flow ${flow.id}: Advance can only be applied to Active Flows`);
     }
 
-    let transition = flow.definition.getTransition(flow.currentStep.definition.id,
-        stepDefinition.id);
+    let transition = flow.definition.getTransition(flow.currentStep.definition.id, stepDefinition.id);
 
-    if (!transition) {
-        throw new Error(`Cannot advance Flow ${flow.id}: No transition from current step to step ${stepDefinition.id} found`);
-    }
-
-    if (transition.condition && !transition.condition.satisfies(data)) {
-        throw new Error(`Cannot advance Flow ${flow.id}: Transition condition from current step to step ${stepDefinition.id} is not satisfied`);
-    }
-    ;
     if (flow.currentStep && flow.currentStep.origin) {
         //Evaluate parallelism
         let prevTransition = flow.definition.getTransition(
@@ -71,11 +62,20 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
         if (prevTransition === null) {
             throw new Error("Cannot determine transition to evaluate parallelism");
         }
-        if (
-            isInParallelBranch(prevTransition) &&
-            !canAdvanceInParallelBranch(prevTransition, flow)) {
-            throw new Error(`Cannot advance Flow ${flow.id}: Flow is in parallel branch and cannot yet advance`);
+        if (isInParallelBranch(prevTransition)) {
+            transition = flow.definition.getTransition(flow.currentStep.origin.definition.id, stepDefinition.id);
+            if (!transition && !canAdvanceInParallelBranch(prevTransition, flow)) {
+                throw new Error(`Cannot advance Flow ${flow.id}: Flow is in parallel branch and cannot yet advance`);
+            }
         }
+    }
+
+    if (!transition) {
+        throw new Error(`Cannot advance Flow ${flow.id}: No transition from current step "${flow.currentStep.definition.id}" to step "${stepDefinition.id}" found`);
+    }
+
+    if (transition.condition && !transition.condition.satisfies(data)) {
+        throw new Error(`Cannot advance Flow ${flow.id}: Transition condition from current step to step ${stepDefinition.id} is not satisfied`);
     }
 
     if (haveVisitedStep(flow, stepDefinition)) {
