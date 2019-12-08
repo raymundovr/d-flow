@@ -16,7 +16,7 @@ function isInParallelBranch(transition: Transition) {
 
 function canAdvanceInParallelBranch(transition: Transition, flow: Flow) {
     let destinationsToInspect = transition.flowDefinition.getTransitionsFrom(transition.origin.id)
-        .filter((t: Transition) => t) //Fix this Typescript error
+        .filter((t: Transition) => t) //TODO: Remove this and fix Typescript error
         .map((t: Transition) => t.destination);
     return destinationsToInspect.every((d: StepDefinition) =>
         haveVisitedStep(flow, d)
@@ -54,6 +54,7 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
     }
 
     let transition = flow.definition.getTransition(flow.currentStep.definition.id, stepDefinition.id);
+    let source = flow.currentStep;
 
     if (flow.currentStep && flow.currentStep.origin) {
         //Evaluate parallelism
@@ -63,10 +64,12 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
             throw new Error("Cannot determine transition to evaluate parallelism");
         }
         if (isInParallelBranch(prevTransition)) {
-            transition = flow.definition.getTransition(flow.currentStep.origin.definition.id, stepDefinition.id);
-            if (!transition && !canAdvanceInParallelBranch(prevTransition, flow)) {
+            let backTransition = flow.definition.getTransition(flow.currentStep.origin.definition.id, stepDefinition.id);
+            source = flow.currentStep.origin;
+            if (!backTransition && !canAdvanceInParallelBranch(prevTransition, flow)) {
                 throw new Error(`Cannot advance Flow ${flow.id}: Flow is in parallel branch and cannot yet advance`);
             }
+            transition = backTransition ? backTransition : transition;
         }
     }
 
@@ -83,7 +86,7 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
     }
 
     flow.currentStep = new FlowStep(
-        flow, stepDefinition, data, flow.currentStep
+        flow, stepDefinition, data, source
     );
     flow.status = stepDefinition.flowStatus || flow.status;
     flow.lastTransition = transition;
