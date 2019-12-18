@@ -1,4 +1,4 @@
 export default interface Result {
-    Ok?: any;
-    Error?: any;
+  Ok?: any;
+  Error?: any;
 }
