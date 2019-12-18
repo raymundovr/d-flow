@@ -4,6 +4,7 @@ import { FlowStatus } from '../src/flow-status';
 import { createDataInputStep } from '../src/data-input-step';
 import { createFieldDefinition } from '../src/field-definition';
 import { equals } from '../src/object-conditions';
+import { requiresAll } from '../src/transition-requirements';
 
 describe("FlowEngine", () => {
     const simpleFlow = createFlowDefinition("simple", "simple")
@@ -30,9 +31,9 @@ describe("FlowEngine", () => {
         .addStep(createDataInputStep("a2", "A2")).afterStepWithId("start")
         .addStep(createDataInputStep("a3", "A3")).afterStepWithId("start")
         .addStep(createDataInputStep("b", "B")).done()
-        .createTransition("a1", "b")
-        .createTransition("a2", "b")
-        .createTransition("a3", "b")
+        .createTransition("a1", "b", null, [requiresAll(['a2', 'a3'])])
+        .createTransition("a2", "b", null, [requiresAll(['a1', 'a3'])])
+        .createTransition("a3", "b", null, [requiresAll(['a2', 'a1'])])
         ;
 
     it("Should create a Flow from a FlowDefinition", () => {

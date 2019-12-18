@@ -50,11 +50,48 @@ export default class Flow {
         return this._steps;
     }
 
+    get visitedStepDefinitionsId(): any[] {
+        return this._steps.map((s: FlowStep) => s.definitionId);
+    }
+
     get tag(): number {
         return this._tag;
     }
 
     updateTag(): void {
         this._tag += 1;
+    }
+
+    hasStatus(status: FlowStatus) {
+        return this.status === status;
+    }
+
+    getTransitionFromCurrentStepTo(stepId: any): Transition | null {
+        if (!this.currentStep) {
+            return null;
+        }
+
+        return this.definition.getTransition(this.currentStep.definitionId, stepId);
+    }
+
+    getTransitionFromStepsTo(stepId: any): Transition | null {
+        let transitionsTo = this.definition.getTransitionsTo(stepId);
+        return transitionsTo.find((t: Transition) => this.visitedStepDefinitionsId.includes(t.origin.id)) || null;
+    }
+
+    getTransitionToStepWithId(stepId: any): Transition | null {
+        return this.getTransitionFromCurrentStepTo(stepId) || this.getTransitionFromStepsTo(stepId);
+    }
+
+    get currentStepHasPrecedent() {
+        return this.currentStep && this.currentStep.origin;
+    }
+
+    get currentStepPrecedentTransition(): Transition | null {
+        if (!this.currentStepHasPrecedent) {
+            return null;
+        }
+
+        return this.definition.getTransition(this.currentStep!.definitionId, this.currentStep!.origin!.definitionId);
     }
 }

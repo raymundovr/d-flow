@@ -33,4 +33,8 @@ export default class FlowStep {
     get origin(): FlowStep | null {
         return this._origin;
     }
+
+    get definitionId(): any {
+        return this._definition.id;
+    }
 }

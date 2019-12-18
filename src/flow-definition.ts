@@ -1,6 +1,7 @@
 import StepDefinition from "./step-definition";
 import Transition, { createTransition } from "./transition";
 import FlowCondition from "./flow-condition";
+import { Requirements } from "./transition-requirements";
 
 /* Transitions */
 export function getTransitionInFlowByStepIds(flow: FlowDefinition, originId: any, destinationId: any): Transition | null {
@@ -179,10 +180,10 @@ export default class FlowDefinition {
         return getTransitionsInFlowToStepById(this, id);
     }
 
-    createTransition(originId: any, destinationId: any, condition?: FlowCondition) {
+    createTransition(originId: any, destinationId: any, condition?: FlowCondition, requirements?: Array<Requirements>) {
         let origin = getStepByIdInFlowOrFail(this, originId);
         let destination = getStepByIdInFlowOrFail(this, destinationId);
-        return this.addTransition(createTransition(this, origin, destination, condition));
+        return this.addTransition(createTransition(this, origin, destination, condition, requirements));
     }
 }
 

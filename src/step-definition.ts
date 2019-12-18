@@ -5,12 +5,12 @@ export default abstract class StepDefinition {
     protected _id: any;
     protected _accessList: Access[] = [];
     public name: string;
-    public flowStatus: FlowStatus;
+    public applyStatusToFlow: FlowStatus;
 
     constructor(id: any, name: string, status: FlowStatus = FlowStatus.Active) {
         this._id = id;
         this.name = name;
-        this.flowStatus = status;
+        this.applyStatusToFlow = status;
     }
 
     get id(): any {
