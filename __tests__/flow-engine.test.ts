@@ -4,7 +4,7 @@ import { FlowStatus } from '../src/flow-status';
 import { createDataInputStep } from '../src/data-input-step';
 import { createFieldDefinition } from '../src/field-definition';
 import { equals } from '../src/object-conditions';
-import { requiresAll } from '../src/transition-requirements';
+import { requiresAll, requiresAny } from '../src/transition-requirements';
 
 describe("FlowEngine", () => {
     const simpleFlow = createFlowDefinition("simple", "simple")
@@ -34,6 +34,22 @@ describe("FlowEngine", () => {
         .createTransition("a1", "b", null, [requiresAll(['a2', 'a3'])])
         .createTransition("a2", "b", null, [requiresAll(['a1', 'a3'])])
         .createTransition("a3", "b", null, [requiresAll(['a2', 'a1'])])
+        ;
+
+    const parallelFlowWithDecision = createFlowDefinition("parallel", "parallel")
+        .setStartStep(createDataInputStep("start", "Start Parallel"))
+        .addStep(
+            createDataInputStep("a", "A").addField(createFieldDefinition('fa', 'number', 'Field A'))
+        ).afterStepWithId("start")
+        .addStep(createDataInputStep("a1", "A1")).afterStepWithId("a", equals('fa', 10))
+        .addStep(createDataInputStep("a2", "A2")).afterStepWithId("a", equals('fa', 20))
+        .addStep(createDataInputStep("b", "B")).afterStepWithId("start")
+        .addStep(createDataInputStep("c", "C")).afterStepWithId("start")
+        .addStep(createDataInputStep("d", "D")).done()
+        .createTransition("a1", "d", null, [requiresAll(['b', 'c'])])
+        .createTransition("a2", "d", null, [requiresAll(['b', 'c'])])
+        .createTransition("b", "d", null, [requiresAny(['a2', 'a1']), requiresAll(['c'])])
+        .createTransition("c", "d", null, [requiresAny(['a2', 'a1']), requiresAll(['b'])])
         ;
 
     it("Should create a Flow from a FlowDefinition", () => {
@@ -88,6 +104,20 @@ describe("FlowEngine", () => {
         flow = Engine.submit(flow, {}, parallelFlow.getStep('b'));
         expect(flow.currentStep!.definition).toMatchObject(
             parallelFlow.getStep('b')
+        );
+    });
+
+    it("Should complete a set of parallel steps, some of them optional due to diverge, correctly in order to advance", () => {
+        let flow = Engine.create(parallelFlowWithDecision);
+        flow = Engine.start(flow, {});
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('a'));
+        expect(() => Engine.submit(flow, {}, parallelFlowWithDecision.getStep('d'))).toThrow();
+        flow = Engine.submit(flow, { fa: 10 }, parallelFlowWithDecision.getStep('a1'));
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('b'));
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('c'));
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('d'));
+        expect(flow.currentStep!.definition).toMatchObject(
+            parallelFlowWithDecision.getStep('d')
         );
     });
 });
