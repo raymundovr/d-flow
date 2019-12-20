@@ -52,6 +52,11 @@ describe("FlowEngine", () => {
         .createTransition("c", "d", null, [requiresAny(['a2', 'a1']), requiresAll(['b'])])
         ;
 
+    const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
+        .setStartStep(createDataInputStep("start", "Start Cyclic"))
+        .addStep(createDataInputStep("a", "A")).afterStepWithId("start")
+        .createTransition("a", "start");
+
     it("Should create a Flow from a FlowDefinition", () => {
         let flow = Engine.create(simpleFlow);
         expect(flow.status).toBe(FlowStatus.Created);
@@ -119,5 +124,15 @@ describe("FlowEngine", () => {
         expect(flow.currentStep!.definition).toMatchObject(
             parallelFlowWithDecision.getStep('d')
         );
+    });
+
+    it("Should update a flow tag when cycle is encountered", () => {
+        let flow = Engine.create(cyclicFlow);
+        flow = Engine.start(flow, {});
+        let firstTag = flow.cycleCount; //Ensure copy
+        flow = Engine.submit(flow, {}, cyclicFlow.getStep("a"));
+        expect(flow.cycleCount).toEqual(firstTag);
+        flow = Engine.submit(flow, {}, cyclicFlow.getStep("start"));
+        expect(flow.cycleCount).not.toEqual(firstTag);
     });
 });
