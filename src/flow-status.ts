@@ -1,7 +1,7 @@
 export enum FlowStatus {
-  Created,
-  Active,
-  Completed,
-  Error,
-  Cancelled,
+    Created,
+    Active,
+    Completed,
+    Error,
+    Cancelled,
 }

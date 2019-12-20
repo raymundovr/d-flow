@@ -163,7 +163,12 @@ export default class FlowDefinition {
                 let before = getStepByIdInFlowOrFail(flow, id);
                 return addStepInFlowBefore(flow, step, before, condition);
             },
-            betweenStepsWithId(idBefore: any, idAfter: any, beforeCondition?: FlowCondition, afterCondition?: FlowCondition) {
+            betweenStepsWithId(
+                idBefore: any,
+                idAfter: any,
+                beforeCondition?: FlowCondition,
+                afterCondition?: FlowCondition,
+            ) {
                 let before = getStepByIdInFlowOrFail(flow, idBefore);
                 let after = getStepByIdInFlowOrFail(flow, idAfter);
                 return addStepInFlowBetween(flow, step, before, after, beforeCondition, afterCondition);
