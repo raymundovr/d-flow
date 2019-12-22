@@ -87,9 +87,7 @@ export default class Flow {
             return transitions[0];
         }
 
-        let lastSubmitted = this.getLastSubmittedStepDefinitionIdInIds(
-            transitions.map((t: Transition) => t.origin.id)
-        );
+        let lastSubmitted = this.getLastSubmittedStepDefinitionIdInIds(transitions.map((t: Transition) => t.origin.id));
 
         return transitions.find((t: Transition) => t.origin.id === lastSubmitted) || null;
     }

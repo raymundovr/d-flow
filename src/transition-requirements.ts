@@ -1,5 +1,4 @@
 import Flow from './flow';
-import FlowStep from './flow-step';
 
 export abstract class Requirements {
     protected _identifiers: Array<any> = [];
