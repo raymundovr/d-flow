@@ -79,17 +79,23 @@ export default class Flow {
         return transitionsTo.filter((t: Transition) => this.visitedStepDefinitionsId.includes(t.origin.id));
     }
 
-    getLastTransitionFromStepsTo(stepId: any): Transition | null {
+    getTransitionFromLastStepTo(stepId: any): Transition | null {
         let transitions = this.getTransitionFromStepsTo(stepId);
         if (transitions.length === 0) {
             return null;
+        } else if (transitions.length === 1) {
+            return transitions[0];
         }
 
-        return transitions[0];
+        let lastSubmitted = this.getLastSubmittedStepDefinitionIdInIds(
+            transitions.map((t: Transition) => t.origin.id)
+        );
+
+        return transitions.find((t: Transition) => t.origin.id === lastSubmitted) || null;
     }
 
     getTransitionToStepWithId(stepId: any): Transition | null {
-        return this.getTransitionFromCurrentStepTo(stepId) || this.getLastTransitionFromStepsTo(stepId);
+        return this.getTransitionFromCurrentStepTo(stepId) || this.getTransitionFromLastStepTo(stepId);
     }
 
     get currentStepHasPrecedent() {
@@ -102,5 +108,19 @@ export default class Flow {
         }
 
         return this.definition.getTransition(this.currentStep!.definitionId, this.currentStep!.origin!.definitionId);
+    }
+
+    getLastSubmittedStepDefinitionIdInIds(ids: any[]): any {
+        let observables = this._steps.filter((s: FlowStep) => ids.includes(s.definitionId));
+        if (observables.length === 0) {
+            return null;
+        }
+
+        observables.sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime());
+        return observables[0].definitionId;
+    }
+
+    getLastSubmittedStepWithDefinitionId(id: any): FlowStep | null {
+        return this._steps.find((s: FlowStep) => s.definitionId === id) || null;
     }
 }

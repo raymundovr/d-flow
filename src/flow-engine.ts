@@ -70,7 +70,14 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
         );
     }
 
-    if (!isTransitionConditionSatisfied(transitionToSubmitted, data)) {
+    let lastStepFromOrigin = flow.getLastSubmittedStepWithDefinitionId(transitionToSubmitted.origin.id);
+    if (!lastStepFromOrigin) {
+        throw new Error(
+            `Cannot advance Flow ${flow.id}: Cannot find last submitted step with step definition ${transitionToSubmitted.origin.id}`
+        );
+    }
+
+    if (!isTransitionConditionSatisfied(transitionToSubmitted, lastStepFromOrigin.data)) {
         throw new Error(
             `Cannot advance Flow ${flow.id}: Transition condition to step ${stepDefinition.id} is not satisfied`,
         );
@@ -86,7 +93,7 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
         flow.increaseCycleCount();
     }
 
-    flow.currentStep = new FlowStep(flow, stepDefinition, data, flow.currentStep);
+    flow.currentStep = new FlowStep(flow, stepDefinition, data, lastStepFromOrigin);
     flow.status = stepDefinition.applyStatusToFlow || flow.status;
     flow.lastTransition = transitionToSubmitted;
     return flow;

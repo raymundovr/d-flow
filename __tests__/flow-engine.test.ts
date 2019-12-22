@@ -93,8 +93,8 @@ describe("FlowEngine", () => {
         let stepA = decisionFlow.getStep('a');
         let stepB1 = decisionFlow.getStep('b1');
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, {}, stepA);
-        flow = Engine.submit(flow, { fa: 10 }, stepB1);
+        flow = Engine.submit(flow, { fa: 10 }, stepA);
+        flow = Engine.submit(flow, {}, stepB1);
         expect(flow.currentStep).not.toBeNull();
         expect(flow.currentStep!.definition).toMatchObject(stepB1);
     });
@@ -115,9 +115,9 @@ describe("FlowEngine", () => {
     it("Should complete a set of parallel steps, some of them optional due to diverge, correctly in order to advance", () => {
         let flow = Engine.create(parallelFlowWithDecision);
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('a'));
+        flow = Engine.submit(flow, { fa: 10 }, parallelFlowWithDecision.getStep('a'));
         expect(() => Engine.submit(flow, {}, parallelFlowWithDecision.getStep('d'))).toThrow();
-        flow = Engine.submit(flow, { fa: 10 }, parallelFlowWithDecision.getStep('a1'));
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('a1'));
         flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('b'));
         flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('c'));
         flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('d'));
