@@ -10,16 +10,16 @@ export function getTransitionInFlowByStepIds(
     destinationId: any,
 ): Transition | null {
     return (
-        flow.transitions.find((t: Transition) => t.origin.id === originId && t.destination.id === destinationId) || null
+        flow.transitions.find((t: Transition) => t.origin === originId && t.destination === destinationId) || null
     );
 }
 
 export function getTransitionsInFlowFromStepById(flow: FlowDefinition, id: any): Array<Transition> | [] {
-    return flow.transitions.filter((t: Transition) => t.origin.id === id);
+    return flow.transitions.filter((t: Transition) => t.origin === id);
 }
 
 export function getTransitionsInFlowToStepById(flow: FlowDefinition, id: any): Array<Transition> | [] {
-    return flow.transitions.filter((t: Transition) => t.destination.id === id);
+    return flow.transitions.filter((t: Transition) => t.destination === id);
 }
 
 /* Steps */
@@ -29,7 +29,7 @@ export function addStepInFlowAfter(
     after: StepDefinition,
     condition?: FlowCondition,
 ): FlowDefinition {
-    return flow.addTransition(createTransition(flow, after, step, condition));
+    return flow.addTransition(createTransition(flow, after.id, step.id, condition));
 }
 
 export function addStepInFlowBefore(
@@ -38,7 +38,7 @@ export function addStepInFlowBefore(
     before: StepDefinition,
     condition?: FlowCondition,
 ): FlowDefinition {
-    return flow.addTransition(createTransition(flow, step, before, condition));
+    return flow.addTransition(createTransition(flow, step.id, before.id, condition));
 }
 
 export function addStepInFlowBetween(
@@ -50,16 +50,16 @@ export function addStepInFlowBetween(
     afterCondition?: FlowCondition,
 ): FlowDefinition {
     let currentTransition = flow.transitions.find(
-        (t: Transition) => t.origin.id === before.id && t.destination.id === after.id,
+        (t: Transition) => t.origin === before.id && t.destination === after.id,
     );
 
     if (currentTransition) {
         flow.removeTransitionById(currentTransition.id);
     }
 
-    flow.addTransition(createTransition(flow, before, step, beforeCondition));
+    flow.addTransition(createTransition(flow, before.id, step.id, beforeCondition));
 
-    flow.addTransition(createTransition(flow, step, after, afterCondition));
+    flow.addTransition(createTransition(flow, step.id, after.id, afterCondition));
     return flow;
 }
 
@@ -194,7 +194,7 @@ export default class FlowDefinition {
     createTransition(originId: any, destinationId: any, condition?: FlowCondition, requirements?: Array<Requirements>) {
         let origin = getStepByIdInFlowOrFail(this, originId);
         let destination = getStepByIdInFlowOrFail(this, destinationId);
-        return this.addTransition(createTransition(this, origin, destination, condition, requirements));
+        return this.addTransition(createTransition(this, origin.id, destination.id, condition, requirements));
     }
 
     getDestinationsFrom(id: any) {

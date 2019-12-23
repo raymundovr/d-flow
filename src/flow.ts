@@ -76,7 +76,7 @@ export default class Flow {
 
     getTransitionFromStepsTo(stepId: any): Transition[] {
         let transitionsTo = this.definition.getTransitionsTo(stepId);
-        return transitionsTo.filter((t: Transition) => this.visitedStepDefinitionsId.includes(t.origin.id));
+        return transitionsTo.filter((t: Transition) => this.visitedStepDefinitionsId.includes(t.origin));
     }
 
     getTransitionFromLastStepTo(stepId: any): Transition | null {
@@ -87,9 +87,9 @@ export default class Flow {
             return transitions[0];
         }
 
-        let lastSubmitted = this.getLastSubmittedStepDefinitionIdInIds(transitions.map((t: Transition) => t.origin.id));
+        let lastSubmitted = this.getLastSubmittedStepDefinitionIdInIds(transitions.map((t: Transition) => t.origin));
 
-        return transitions.find((t: Transition) => t.origin.id === lastSubmitted) || null;
+        return transitions.find((t: Transition) => t.origin === lastSubmitted) || null;
     }
 
     getTransitionToStepWithId(stepId: any): Transition | null {
