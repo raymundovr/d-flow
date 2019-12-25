@@ -34,7 +34,7 @@ export default class Flow {
         return this._createdAt;
     }
 
-    get currentStep(): FlowStep | null {
+    get currentStep(): FlowStep | null {        
         return this._currentStep;
     }
 
@@ -42,6 +42,7 @@ export default class Flow {
         if (step === null) {
             throw new Error('Cannot assign null to Flow CurrentStep');
         }
+        this.status = this.definition.getStatusOnCompletedStep(step.definitionId) || this.status;
         this._currentStep = step;
         this._steps.push(step);
     }

@@ -1,15 +1,59 @@
-import StepDefinition from './step-definition';
 import FlowDefinition from './flow-definition';
 import FlowCondition from './flow-condition';
 import { Requirements } from './transition-requirements';
 
-export default interface Transition {
-    readonly id: string;
-    readonly flowDefinition: FlowDefinition;
-    readonly origin: string;
-    readonly destination: string;
-    condition?: FlowCondition;
-    requirements?: Array<Requirements>;
+export default class Transition {
+    private _id: string;
+    private _flow: FlowDefinition;
+    private _origin: string;
+    private _destination: string;
+    private _condition? : FlowCondition;
+    private _requirements? : Array<Requirements>;
+
+    constructor(flow: FlowDefinition, origin: string, destination: string, 
+        condition?: FlowCondition, requirements?: Array<Requirements>)
+    {
+        this._id = `${origin}-${destination}`;
+        this._flow = flow;
+        this._origin = origin;
+        this._destination = destination;
+        this._condition = condition;
+        this._requirements = requirements;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    get flowDefinition() {
+        return this._flow;
+    }
+
+    get origin() {
+        return this._origin;
+    }
+
+    get destination() {
+        return this._destination;
+    }
+
+    get condition() {
+        return this._condition;
+    }
+
+    setCondition(value: FlowCondition) {
+        this._condition = value;
+        return this;
+    }
+
+    get requirements() {
+        return this._requirements;
+    }
+
+    setRequirements(value: Array<Requirements>) {
+        this._requirements = value;
+        return this;
+    }
 }
 
 export function createTransition(
@@ -19,12 +63,11 @@ export function createTransition(
     condition?: FlowCondition,
     requirements?: Array<Requirements>,
 ): Transition {
-    return {
-        id: `${origin.toString()}-${destination.toString()}`,
+    return new Transition(        
         flowDefinition,
         origin,
         destination,
         condition,
         requirements,
-    };
+    );
 }

@@ -10,9 +10,8 @@ describe("FlowEngine", () => {
     const simpleFlow = createFlowDefinition("simple", "simple")
         .setStartStep(createDataInputStep("start", "Start Step"))
         .addStep(createDataInputStep("a", "Step A")).afterStep("start")
-        .addStep(
-            createDataInputStep("b", "Step B", FlowStatus.Completed)
-        ).afterStep("a")
+        .addStep(createDataInputStep("b", "Step B")).afterStep("a")
+        .setStatusOnCompletedStep("b", FlowStatus.Completed)
         ;
     const decisionFlow = createFlowDefinition("decision", "decision")
         .setStartStep(createDataInputStep("start", "Start Decision"))

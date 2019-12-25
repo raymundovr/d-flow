@@ -94,7 +94,6 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
     }
 
     flow.currentStep = new FlowStep(flow, stepDefinition, data, lastStepFromOrigin);
-    flow.status = stepDefinition.applyStatusToFlow || flow.status;
     flow.lastTransition = transitionToSubmitted;
     return flow;
 }
