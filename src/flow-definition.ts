@@ -25,41 +25,41 @@ export function getTransitionsInFlowToStepById(flow: FlowDefinition, id: any): A
 /* Steps */
 export function addStepInFlowAfter(
     flow: FlowDefinition,
-    step: StepDefinition,
-    after: StepDefinition,
+    stepId: string,
+    afterId: string,
     condition?: FlowCondition,
 ): FlowDefinition {
-    return flow.addTransition(createTransition(flow, after.id, step.id, condition));
+    return flow.addTransition(createTransition(flow, afterId, stepId, condition));
 }
 
 export function addStepInFlowBefore(
     flow: FlowDefinition,
-    step: StepDefinition,
-    before: StepDefinition,
+    stepId: string,
+    beforeId: string,
     condition?: FlowCondition,
 ): FlowDefinition {
-    return flow.addTransition(createTransition(flow, step.id, before.id, condition));
+    return flow.addTransition(createTransition(flow, stepId, beforeId, condition));
 }
 
 export function addStepInFlowBetween(
     flow: FlowDefinition,
-    step: StepDefinition,
-    before: StepDefinition,
-    after: StepDefinition,
+    stepId: string,
+    beforeId: string,
+    afterId: string,
     beforeCondition?: FlowCondition,
     afterCondition?: FlowCondition,
 ): FlowDefinition {
     let currentTransition = flow.transitions.find(
-        (t: Transition) => t.origin === before.id && t.destination === after.id,
+        (t: Transition) => t.origin === beforeId && t.destination === afterId,
     );
 
     if (currentTransition) {
         flow.removeTransitionById(currentTransition.id);
     }
 
-    flow.addTransition(createTransition(flow, before.id, step.id, beforeCondition));
+    flow.addTransition(createTransition(flow, beforeId, stepId, beforeCondition));
 
-    flow.addTransition(createTransition(flow, step.id, after.id, afterCondition));
+    flow.addTransition(createTransition(flow, stepId, afterId, afterCondition));
     return flow;
 }
 
@@ -79,9 +79,6 @@ interface AddStepInterface {
     afterStep: Function;
     beforeStep: Function;
     betweenSteps: Function;
-    afterStepWithId: Function;
-    beforeStepWithId: Function;
-    betweenStepsWithId: Function;
     done: Function;
 }
 
@@ -141,37 +138,33 @@ export default class FlowDefinition {
     addStep(step: StepDefinition): AddStepInterface {
         let flow = this.appendStep(step);
         return {
-            afterStep: function(after: StepDefinition, condition?: FlowCondition) {
-                return addStepInFlowAfter(flow, step, after, condition);
+            afterStep: function(id: any, condition?: FlowCondition) {
+                if (!!!flow.getStep(id)) {
+                    throw new Error(`Cannot find step with id ${id}`)
+                }
+
+                return addStepInFlowAfter(flow, step.id.toString(), id.toString(), condition);
             },
-            beforeStep: function(before: StepDefinition, condition?: FlowCondition) {
-                return addStepInFlowBefore(flow, step, before, condition);
+            beforeStep: function(id: any, condition?: FlowCondition) {
+                if (!!!flow.getStep(id)) {
+                    throw new Error(`Cannot find step with id ${id}`)
+                }
+                return addStepInFlowBefore(flow, step.id.toString(), id.toString(), condition);
             },
-            betweenSteps: function(
-                before: StepDefinition,
-                after: StepDefinition,
-                beforeCondition?: FlowCondition,
-                afterCondition?: FlowCondition,
-            ) {
-                return addStepInFlowBetween(flow, step, before, after, beforeCondition, afterCondition);
-            },
-            afterStepWithId: function(id: any, condition?: FlowCondition) {
-                let after = getStepByIdInFlowOrFail(flow, id);
-                return addStepInFlowAfter(flow, step, after, condition);
-            },
-            beforeStepWithId: function(id: any, condition?: FlowCondition) {
-                let before = getStepByIdInFlowOrFail(flow, id);
-                return addStepInFlowBefore(flow, step, before, condition);
-            },
-            betweenStepsWithId(
+            betweenSteps(
                 idBefore: any,
                 idAfter: any,
                 beforeCondition?: FlowCondition,
                 afterCondition?: FlowCondition,
             ) {
-                let before = getStepByIdInFlowOrFail(flow, idBefore);
-                let after = getStepByIdInFlowOrFail(flow, idAfter);
-                return addStepInFlowBetween(flow, step, before, after, beforeCondition, afterCondition);
+                if (!!!flow.getStep(idBefore)) {
+                    throw new Error(`Cannot find step with id ${idBefore}`)
+                }
+                if (!!!flow.getStep(idAfter)) {
+                    throw new Error(`Cannot find step with id ${idAfter}`)
+                }
+
+                return addStepInFlowBetween(flow, step.id.toString(), idBefore.toString(), idAfter.toString(), beforeCondition, afterCondition);
             },
             done: function() {
                 return flow;

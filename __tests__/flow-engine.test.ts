@@ -9,27 +9,27 @@ import { requiresAll, requiresAny } from '../src/transition-requirements';
 describe("FlowEngine", () => {
     const simpleFlow = createFlowDefinition("simple", "simple")
         .setStartStep(createDataInputStep("start", "Start Step"))
-        .addStep(createDataInputStep("a", "Step A")).afterStepWithId("start")
+        .addStep(createDataInputStep("a", "Step A")).afterStep("start")
         .addStep(
             createDataInputStep("b", "Step B", FlowStatus.Completed)
-        ).afterStepWithId("a")
+        ).afterStep("a")
         ;
     const decisionFlow = createFlowDefinition("decision", "decision")
         .setStartStep(createDataInputStep("start", "Start Decision"))
         .addStep(
             createDataInputStep("a", "Step A")
                 .addField(createFieldDefinition('fa', 'number', 'Field A'))
-        ).afterStepWithId("start")
+        ).afterStep("start")
         .addStep(
             createDataInputStep("b1", "Step B1")
-        ).afterStepWithId("a", equals('fa', 10))
+        ).afterStep("a", equals('fa', 10))
         ;
 
     const parallelFlow = createFlowDefinition("parallel", "parallel")
         .setStartStep(createDataInputStep("start", "Start Parallel"))
-        .addStep(createDataInputStep("a1", "A1")).afterStepWithId("start")
-        .addStep(createDataInputStep("a2", "A2")).afterStepWithId("start")
-        .addStep(createDataInputStep("a3", "A3")).afterStepWithId("start")
+        .addStep(createDataInputStep("a1", "A1")).afterStep("start")
+        .addStep(createDataInputStep("a2", "A2")).afterStep("start")
+        .addStep(createDataInputStep("a3", "A3")).afterStep("start")
         .addStep(createDataInputStep("b", "B")).done()
         .createTransition("a1", "b", null, [requiresAll(['a2', 'a3'])])
         .createTransition("a2", "b", null, [requiresAll(['a1', 'a3'])])
@@ -40,11 +40,11 @@ describe("FlowEngine", () => {
         .setStartStep(createDataInputStep("start", "Start Parallel"))
         .addStep(
             createDataInputStep("a", "A").addField(createFieldDefinition('fa', 'number', 'Field A'))
-        ).afterStepWithId("start")
-        .addStep(createDataInputStep("a1", "A1")).afterStepWithId("a", equals('fa', 10))
-        .addStep(createDataInputStep("a2", "A2")).afterStepWithId("a", equals('fa', 20))
-        .addStep(createDataInputStep("b", "B")).afterStepWithId("start")
-        .addStep(createDataInputStep("c", "C")).afterStepWithId("start")
+        ).afterStep("start")
+        .addStep(createDataInputStep("a1", "A1")).afterStep("a", equals('fa', 10))
+        .addStep(createDataInputStep("a2", "A2")).afterStep("a", equals('fa', 20))
+        .addStep(createDataInputStep("b", "B")).afterStep("start")
+        .addStep(createDataInputStep("c", "C")).afterStep("start")
         .addStep(createDataInputStep("d", "D")).done()
         .createTransition("a1", "d", null, [requiresAll(['b', 'c'])])
         .createTransition("a2", "d", null, [requiresAll(['b', 'c'])])
@@ -54,7 +54,7 @@ describe("FlowEngine", () => {
 
     const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
         .setStartStep(createDataInputStep("start", "Start Cyclic"))
-        .addStep(createDataInputStep("a", "A")).afterStepWithId("start")
+        .addStep(createDataInputStep("a", "A")).afterStep("start")
         .createTransition("a", "start");
 
     it("Should create a Flow from a FlowDefinition", () => {
