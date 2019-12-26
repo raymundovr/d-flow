@@ -1,4 +1,4 @@
-import { createFlowDefinition } from '../src/flow-definition';
+import { createFlowDefinition } from '../src/flow/flow-definition';
 import { createDataInputStep } from '../src/step/data-input-step';
 
 describe("FlowDefinition", () => {

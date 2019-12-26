@@ -1,4 +1,4 @@
-import FlowDefinition from '../flow-definition';
+import FlowDefinition from '../flow/flow-definition';
 import TransitionCondition from './transition-condition';
 import { Requirements } from './transition-requirements';
 

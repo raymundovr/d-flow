@@ -1,4 +1,4 @@
-import Flow from '../flow';
+import Flow from '../flow/flow';
 
 export abstract class Requirements {
     protected _identifiers: Array<any> = [];

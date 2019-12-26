@@ -1,7 +1,7 @@
-import StepDefinition from './step/step-definition';
-import Transition, { createTransition } from './transition/transition';
-import TransitionCondition from './transition/transition-condition';
-import { Requirements } from './transition/transition-requirements';
+import StepDefinition from '../step/step-definition';
+import Transition, { createTransition } from '../transition/transition';
+import TransitionCondition from '../transition/transition-condition';
+import { Requirements } from '../transition/transition-requirements';
 import { FlowStatus } from './flow-status';
 
 interface AddStepInterface {

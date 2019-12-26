@@ -1,6 +1,6 @@
-import * as Engine from '../src/flow-engine';
-import { createFlowDefinition } from '../src/flow-definition';
-import { FlowStatus } from '../src/flow-status';
+import * as Engine from '../src/flow/flow-engine';
+import { createFlowDefinition } from '../src/flow/flow-definition';
+import { FlowStatus } from '../src/flow/flow-status';
 import { createDataInputStep } from '../src/step/data-input-step';
 import { createFieldDefinition } from '../src/step/field-definition';
 import { equals } from '../src/transition/object-conditions';
