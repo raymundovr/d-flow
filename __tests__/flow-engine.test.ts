@@ -1,12 +1,17 @@
 import * as Engine from '../src/flow/flow-engine';
 import { createFlowDefinition } from '../src/flow/flow-definition';
 import { FlowStatus } from '../src/flow/flow-status';
-import { createDataInputStep } from '../src/step/data-input-step';
+import DataInputStep from '../src/step/data-input-step';
+import JsonProcessor from '../src/step/json-processor';
 import { createFieldDefinition } from '../src/step/field-definition';
 import { equals } from '../src/transition/object-conditions';
 import { requiresAll, requiresAny } from '../src/transition/transition-requirements';
 
 describe("FlowEngine", () => {
+    const createDataInputStep = (id: any, name: string): DataInputStep => {
+        return new DataInputStep(id, name, JsonProcessor);
+    };
+
     const simpleFlow = createFlowDefinition("simple", "simple")
         .setStartStep(createDataInputStep("start", "Start Step"))
         .addStep(createDataInputStep("a", "Step A")).afterStep("start")

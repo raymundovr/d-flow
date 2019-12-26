@@ -93,7 +93,8 @@ export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): F
         flow.increaseCycleCount();
     }
 
-    flow.currentStep = new FlowStep(flow, stepDefinition, data, lastStepFromOrigin);
+    let output = stepDefinition.process(data);
+    flow.currentStep = new FlowStep(flow, stepDefinition, output, lastStepFromOrigin);
     flow.lastTransition = transitionToSubmitted;
     return flow;
 }
