@@ -1,18 +1,13 @@
 # D-Flow
-A storage agnostic data workfow engine.
+A storage agnostic data workflow engine. It takes care of maintaining a valid state for your multi-step processes.
 
 ## Start by defining a workflow
 In order to run the engine it is necessary to define the set of steps and transitions that your data will go through on each submission, this can be performed by creating a FlowDefinition.
 
 ### Define a Step
 A Data Step Definition can include a set of Fields to which your data can be validated against.
-This fields have a specific data type and can be set as required in order for the submission to be valid.  The validation is performed by a Processor that can be specified per step.
+This fields have a specific data type and can be set as required in order for the submission to be valid. The validation is performed by a Processor that can be specified per step.
 At the moment the only supported data type is JSON or Javascript Object. The validation for this data type is provided by the JSON Data Processor.
-
-```javascript
-const {JsonProcessor, DataInputStep} = require('d-flow');
-const createJSONStep = (id, name) => return new DataInputStep(id, name, JsonProcessor);
-```
 
 Each submission will be validated by the engine, specifically it will verify:
 - That the step that you want to reach is defined for the flow
@@ -35,9 +30,9 @@ This examples make use of simple data steps that are encoded in JSON format or a
 ```javascript
 const { DataInputStep, FlowDefinition, FlowStatus, createTransition } = require('d-flow');
 const simpleFlow = new FlowDefinition("simple", "simple")
-        .setStartStep(createJSONStep("start", "Start Step"))
-        .addStep(createJSONStep("a", "Step A"))
-        .addStep(createJSONStep("b", "Step B"))
+        .setStartStep(new DataInputStep("start", "Start Step"))
+        .addStep(new DataInputStep("a", "Step A"))
+        .addStep(new DataInputStep("b", "Step B"))
         .addTransition(createTransition("start", "a"))
         .addTransition(createTransition("a", "b"))
         .setStatusOnCompletedStep("b", FlowStatus.Completed)
