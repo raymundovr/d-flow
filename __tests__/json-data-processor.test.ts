@@ -9,7 +9,8 @@ describe("JSON Data Processor", () => {
             .addField(createFieldDefinition('text', 'string', 'text'));
         let output = step.process({
             number: 1,
-            text: "abc"
+            text: "abc",
+            other: "blah blah"
         });
         expect(output).toEqual({
             number: 1,
