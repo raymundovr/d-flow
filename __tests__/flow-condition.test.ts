@@ -1,4 +1,4 @@
-import { equals } from '../src/object-conditions';
+import { equals } from '../src/transition/object-conditions';
 
 describe("Flow conditions tests", () => {
     it("::equals", () => {

@@ -3,7 +3,7 @@ import { createFlowDefinition } from '../src/flow-definition';
 import { FlowStatus } from '../src/flow-status';
 import { createDataInputStep } from '../src/step/data-input-step';
 import { createFieldDefinition } from '../src/step/field-definition';
-import { equals } from '../src/object-conditions';
+import { equals } from '../src/transition/object-conditions';
 import { requiresAll, requiresAny } from '../src/transition/transition-requirements';
 
 describe("FlowEngine", () => {
