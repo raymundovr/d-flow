@@ -45,7 +45,7 @@ export default class FlowDefinition {
         if (this.getStep(t.origin) === null || this.getStep(t.destination) === null) {
             throw new Error(`Cannot add transition ${t.id} origin and destination are not steps within this flow`);
         }
-        
+
         this._transitions.push(t);
         return this;
     }
@@ -89,8 +89,4 @@ export default class FlowDefinition {
         return stepId.toString() in this._statusToApplyOnStepCompletion ? 
             this._statusToApplyOnStepCompletion[stepId.toString()] : undefined;
     }
-}
-
-export function createFlowDefinition(id: any, description: string) {    
-    return new FlowDefinition(id, description)
 }

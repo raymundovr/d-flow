@@ -1,4 +1,4 @@
-import { createFlowDefinition } from '../src/flow/flow-definition';
+import FlowDefinition from '../src/flow/flow-definition';
 import DataInputStep from '../src/step/data-input-step';
 import JsonDataStep from '../src/step/json-processor';
 import { createTransition } from '../src/transition/transition';
@@ -8,9 +8,9 @@ const createDataInputStep = (id: any, name: string): DataInputStep => {
 };
 
 describe("FlowDefinition", () => {
-    test("::createFlowDefinition()", () => {
+    test("::new FlowDefinition()", () => {
         expect(
-            createFlowDefinition('test', "Test")
+            new FlowDefinition('test', "Test")
         ).toMatchObject({
             id: 'test',
             description: 'Test',
@@ -21,14 +21,14 @@ describe("FlowDefinition", () => {
 
     test("::setStartStep()", () => {
         let start = createDataInputStep('step', 'Step');
-        let flow = createFlowDefinition("test", "Test").
+        let flow = new FlowDefinition("test", "Test").
             setStartStep(start);
         expect(flow.startStep).toBe(start);
         expect(Object.keys(flow.steps).length).toBe(1);
     });
 
     test("::addStep()", () => {
-        let flow = createFlowDefinition("test", "test")
+        let flow = new FlowDefinition("test", "test")
             .setStartStep(createDataInputStep("start", "start"))
             .addStep(createDataInputStep("a", "a"))
             .addTransition(createTransition("start", "a"));
@@ -38,7 +38,7 @@ describe("FlowDefinition", () => {
     });
 
     /* test("::addStep().before()", () => {
-        let flow = createFlowDefinition("test", "test")
+        let flow = new FlowDefinition("test", "test")
             .setStartStep(createDataInputStep("start", "start"))
             .addStep(createDataInputStep("a", "a")).afterStep("start")
             .addStep(createDataInputStep("b", "b")).beforeStep("a");
@@ -47,7 +47,7 @@ describe("FlowDefinition", () => {
     });
 
     test("::addStep().between()", () => {
-        let flow = createFlowDefinition("test", "test")
+        let flow = new FlowDefinition("test", "test")
             .setStartStep(createDataInputStep("start", "start"))
             .addStep(createDataInputStep("b", "b")).afterStep("start")
             .addStep(createDataInputStep("a", "a")).betweenSteps("start", "b");
@@ -56,14 +56,14 @@ describe("FlowDefinition", () => {
     }); */
 
     test("::getStep()", () => {
-        let flow = createFlowDefinition("test", "test")
+        let flow = new FlowDefinition("test", "test")
             .addStep(createDataInputStep("start", "start"));
         expect(flow.getStep("start")!).not.toBeNull();
         expect(flow.getStep("none")).toBeNull();
     });
 
     test("::addTransition()", () => {
-        let flow = createFlowDefinition("test", "test")
+        let flow = new FlowDefinition("test", "test")
             .addStep(createDataInputStep("a", "a"))
             .addStep(createDataInputStep("b", "b"))
             .addTransition(createTransition("a", "b"));
@@ -72,7 +72,7 @@ describe("FlowDefinition", () => {
     });
 
     test("::getTransitions()", () => {
-        let flow = createFlowDefinition("test", "test")
+        let flow = new FlowDefinition("test", "test")
             .addStep(createDataInputStep("a", "a"))
             .addStep(createDataInputStep("b", "b"))
             .addTransition(createTransition("a", "b"));
