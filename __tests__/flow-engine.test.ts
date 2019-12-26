@@ -1,11 +1,12 @@
-import * as Engine from '../src/flow/flow-engine';
-import { createFlowDefinition } from '../src/flow/flow-definition';
-import { FlowStatus } from '../src/flow/flow-status';
-import DataInputStep from '../src/step/data-input-step';
-import JsonProcessor from '../src/step/json-processor';
-import { createFieldDefinition } from '../src/step/field-definition';
-import { equals } from '../src/transition/object-conditions';
-import { requiresAll, requiresAny } from '../src/transition/transition-requirements';
+import * as Engine from "../src/flow/flow-engine";
+import { createFlowDefinition } from "../src/flow/flow-definition";
+import { FlowStatus } from "../src/flow/flow-status";
+import DataInputStep from "../src/step/data-input-step";
+import JsonProcessor from "../src/step/json-processor";
+import { createFieldDefinition } from "../src/step/field-definition";
+import { equals } from "../src/transition/object-conditions";
+import { requiresAll, requiresAny } from "../src/transition/transition-requirements";
+import {createTransition} from "../src/transition/transition";
 
 describe("FlowEngine", () => {
     const createDataInputStep = (id: any, name: string): DataInputStep => {
@@ -14,52 +15,58 @@ describe("FlowEngine", () => {
 
     const simpleFlow = createFlowDefinition("simple", "simple")
         .setStartStep(createDataInputStep("start", "Start Step"))
-        .addStep(createDataInputStep("a", "Step A")).afterStep("start")
-        .addStep(createDataInputStep("b", "Step B")).afterStep("a")
+        .addStep(createDataInputStep("a", "Step A"))
+        .addStep(createDataInputStep("b", "Step B"))
+        .addTransition(createTransition("start", "a"))
+        .addTransition(createTransition("a", "b"))
         .setStatusOnCompletedStep("b", FlowStatus.Completed)
         ;
     const decisionFlow = createFlowDefinition("decision", "decision")
         .setStartStep(createDataInputStep("start", "Start Decision"))
-        .addStep(
-            createDataInputStep("a", "Step A")
-                .addField(createFieldDefinition('fa', 'number', 'Field A'))
-        ).afterStep("start")
-        .addStep(
-            createDataInputStep("b1", "Step B1")
-        ).afterStep("a", equals('fa', 10))
+        .addStep(createDataInputStep("a", "Step A").addField(createFieldDefinition("fa", "number", "Field A")))
+        .addStep(createDataInputStep("b1", "Step B1"))
+        .addTransition(createTransition("start", "a"))
+        .addTransition(createTransition("a", "b1").setCondition(equals("fa", 10)))
         ;
 
     const parallelFlow = createFlowDefinition("parallel", "parallel")
         .setStartStep(createDataInputStep("start", "Start Parallel"))
-        .addStep(createDataInputStep("a1", "A1")).afterStep("start")
-        .addStep(createDataInputStep("a2", "A2")).afterStep("start")
-        .addStep(createDataInputStep("a3", "A3")).afterStep("start")
-        .addStep(createDataInputStep("b", "B")).done()
-        .createTransition("a1", "b", null, [requiresAll(['a2', 'a3'])])
-        .createTransition("a2", "b", null, [requiresAll(['a1', 'a3'])])
-        .createTransition("a3", "b", null, [requiresAll(['a2', 'a1'])])
+        .addStep(createDataInputStep("a1", "A1"))
+        .addStep(createDataInputStep("a2", "A2"))
+        .addStep(createDataInputStep("a3", "A3"))
+        .addStep(createDataInputStep("b", "B"))
+        .addTransition(createTransition("start", "a1"))
+        .addTransition(createTransition("start", "a2"))
+        .addTransition(createTransition("start", "a3"))
+        .addTransition(createTransition("a1", "b").setRequirements([requiresAll(["a2", "a3"])]))
+        .addTransition(createTransition("a2", "b").setRequirements([requiresAll(["a1", "a3"])]))
+        .addTransition(createTransition("a3", "b").setRequirements([requiresAll(["a2", "a1"])]))
         ;
 
     const parallelFlowWithDecision = createFlowDefinition("parallel", "parallel")
         .setStartStep(createDataInputStep("start", "Start Parallel"))
-        .addStep(
-            createDataInputStep("a", "A").addField(createFieldDefinition('fa', 'number', 'Field A'))
-        ).afterStep("start")
-        .addStep(createDataInputStep("a1", "A1")).afterStep("a", equals('fa', 10))
-        .addStep(createDataInputStep("a2", "A2")).afterStep("a", equals('fa', 20))
-        .addStep(createDataInputStep("b", "B")).afterStep("start")
-        .addStep(createDataInputStep("c", "C")).afterStep("start")
-        .addStep(createDataInputStep("d", "D")).done()
-        .createTransition("a1", "d", null, [requiresAll(['b', 'c'])])
-        .createTransition("a2", "d", null, [requiresAll(['b', 'c'])])
-        .createTransition("b", "d", null, [requiresAny(['a2', 'a1']), requiresAll(['c'])])
-        .createTransition("c", "d", null, [requiresAny(['a2', 'a1']), requiresAll(['b'])])
+        .addStep(createDataInputStep("a", "A").addField(createFieldDefinition("fa", "number", "Field A")))
+        .addStep(createDataInputStep("a1", "A1"))
+        .addStep(createDataInputStep("a2", "A2"))
+        .addStep(createDataInputStep("b", "B"))
+        .addStep(createDataInputStep("c", "C"))
+        .addStep(createDataInputStep("d", "D"))
+        .addTransition(createTransition("start", "a"))
+        .addTransition(createTransition("a", "a1").setCondition(equals("fa", 10)))
+        .addTransition(createTransition("a", "a2").setCondition(equals("fa", 20)))
+        .addTransition(createTransition("start", "b"))
+        .addTransition(createTransition("start", "c"))
+        .addTransition(createTransition("a1", "d").setRequirements([requiresAll(["b", "c"])]))
+        .addTransition(createTransition("a2", "d").setRequirements([requiresAll(["b", "c"])]))
+        .addTransition(createTransition("b", "d").setRequirements([requiresAny(["a2", "a1"]), requiresAll(["c"])]))
+        .addTransition(createTransition("c", "d").setRequirements([requiresAny(["a2", "a1"]), requiresAll(["b"])]))
         ;
 
     const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
         .setStartStep(createDataInputStep("start", "Start Cyclic"))
-        .addStep(createDataInputStep("a", "A")).afterStep("start")
-        .createTransition("a", "start");
+        .addStep(createDataInputStep("a", "A"))
+        .addTransition(createTransition("start", "a"))
+        .addTransition(createTransition("a", "start"));
 
     it("Should create a Flow from a FlowDefinition", () => {
         let flow = Engine.create(simpleFlow);
@@ -74,59 +81,59 @@ describe("FlowEngine", () => {
             Engine.create(simpleFlow),
             {}
         );
-        expect(flow.currentStep).not.toBeNull();
-        expect(flow.currentStep!.definition).toMatchObject(simpleFlow.startStep);
+        expect(flow.currentStep).not.toBeNull();        
+        expect(flow.currentStep!.definition).toMatchObject(simpleFlow.startStep!);
     });
 
     it("Should complete a Flow START -> A -> B", () => {
         let flow = Engine.create(simpleFlow);
-        let stepA = simpleFlow.getStep('a');
-        let stepB = simpleFlow.getStep('b');
+        let stepA = simpleFlow.getStep("a");
+        let stepB = simpleFlow.getStep("b");
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, {}, stepA);
+        flow = Engine.submit(flow, {}, stepA!);
         expect(flow.currentStep).not.toBeNull();
-        expect(flow.currentStep!.definition).toMatchObject(stepA);
-        flow = Engine.submit(flow, {}, stepB);
+        expect(flow.currentStep!.definition).toMatchObject(stepA!);
+        flow = Engine.submit(flow, {}, stepB!);
         expect(flow.currentStep).not.toBeNull();
-        expect(flow.currentStep!.definition).toMatchObject(stepB);
+        expect(flow.currentStep!.definition).toMatchObject(stepB!);
         expect(flow.status).toBe(FlowStatus.Completed);
     });
 
     it("Should complete a flow on a decision branch based on a condition START -> A -> (condition) -> B1", () => {
         let flow = Engine.create(decisionFlow);
-        let stepA = decisionFlow.getStep('a');
-        let stepB1 = decisionFlow.getStep('b1');
+        let stepA = decisionFlow.getStep("a");
+        let stepB1 = decisionFlow.getStep("b1");
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, { fa: 10 }, stepA);
-        flow = Engine.submit(flow, {}, stepB1);
+        flow = Engine.submit(flow, { fa: 10 }, stepA!);
+        flow = Engine.submit(flow, {}, stepB1!);
         expect(flow.currentStep).not.toBeNull();
-        expect(flow.currentStep!.definition).toMatchObject(stepB1);
+        expect(flow.currentStep!.definition).toMatchObject(stepB1!);
     });
 
     it("Should complete a set of parallel steps correctly in order to advance", () => {
         let flow = Engine.create(parallelFlow);
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, {}, parallelFlow.getStep('a1'));
-        expect(() => Engine.submit(flow, {}, parallelFlow.getStep('b'))).toThrow();
-        flow = Engine.submit(flow, {}, parallelFlow.getStep('a2'));
-        flow = Engine.submit(flow, {}, parallelFlow.getStep('a3'));
-        flow = Engine.submit(flow, {}, parallelFlow.getStep('b'));
+        flow = Engine.submit(flow, {}, parallelFlow.getStep("a1")!);
+        expect(() => Engine.submit(flow, {}, parallelFlow.getStep("b")!)).toThrow();
+        flow = Engine.submit(flow, {}, parallelFlow.getStep("a2")!);
+        flow = Engine.submit(flow, {}, parallelFlow.getStep("a3")!);
+        flow = Engine.submit(flow, {}, parallelFlow.getStep("b")!);
         expect(flow.currentStep!.definition).toMatchObject(
-            parallelFlow.getStep('b')
+            parallelFlow.getStep("b")!
         );
     });
 
     it("Should complete a set of parallel steps, some of them optional due to diverge, correctly in order to advance", () => {
         let flow = Engine.create(parallelFlowWithDecision);
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, { fa: 10 }, parallelFlowWithDecision.getStep('a'));
-        expect(() => Engine.submit(flow, {}, parallelFlowWithDecision.getStep('d'))).toThrow();
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('a1'));
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('b'));
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('c'));
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep('d'));
+        flow = Engine.submit(flow, { fa: 10 }, parallelFlowWithDecision.getStep("a")!);
+        expect(() => Engine.submit(flow, {}, parallelFlowWithDecision.getStep("d")!)).toThrow();
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("a1")!);
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("b")!);
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("c")!);
+        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("d")!);
         expect(flow.currentStep!.definition).toMatchObject(
-            parallelFlowWithDecision.getStep('d')
+            parallelFlowWithDecision.getStep("d")!
         );
     });
 
@@ -134,9 +141,9 @@ describe("FlowEngine", () => {
         let flow = Engine.create(cyclicFlow);
         flow = Engine.start(flow, {});
         let firstTag = flow.cycleCount; //Ensure copy
-        flow = Engine.submit(flow, {}, cyclicFlow.getStep("a"));
+        flow = Engine.submit(flow, {}, cyclicFlow.getStep("a")!);
         expect(flow.cycleCount).toEqual(firstTag);
-        flow = Engine.submit(flow, {}, cyclicFlow.getStep("start"));
+        flow = Engine.submit(flow, {}, cyclicFlow.getStep("start")!);
         expect(flow.cycleCount).not.toEqual(firstTag);
     });
 });

@@ -3,18 +3,16 @@ import TransitionCondition from './transition-condition';
 import { Requirements } from './transition-requirements';
 
 export default class Transition {
-    private _id: string;
-    private _flow: FlowDefinition;
+    private _id: string;    
     private _origin: string;
     private _destination: string;
     private _condition? : TransitionCondition;
     private _requirements? : Array<Requirements>;
 
-    constructor(flow: FlowDefinition, origin: string, destination: string, 
+    constructor(origin: string, destination: string, 
         condition?: TransitionCondition, requirements?: Array<Requirements>)
     {
-        this._id = `${origin}-${destination}`;
-        this._flow = flow;
+        this._id = `${origin}-${destination}`;        
         this._origin = origin;
         this._destination = destination;
         this._condition = condition;
@@ -23,10 +21,6 @@ export default class Transition {
 
     get id() {
         return this._id;
-    }
-
-    get flowDefinition() {
-        return this._flow;
     }
 
     get origin() {
@@ -56,15 +50,13 @@ export default class Transition {
     }
 }
 
-export function createTransition(
-    flowDefinition: FlowDefinition,
+export function createTransition(    
     origin: string,
     destination: string,
     condition?: TransitionCondition,
     requirements?: Array<Requirements>,
 ): Transition {
-    return new Transition(        
-        flowDefinition,
+    return new Transition(                
         origin,
         destination,
         condition,

@@ -1,21 +1,6 @@
 import StepDefinition from '../step/step-definition';
-import Transition, { createTransition } from '../transition/transition';
-import TransitionCondition from '../transition/transition-condition';
-import { Requirements } from '../transition/transition-requirements';
+import Transition from '../transition/transition';
 import { FlowStatus } from './flow-status';
-
-interface AddStepInterface {
-    afterStep: Function;
-    beforeStep: Function;
-    betweenSteps: Function;
-    done: Function;
-}
-
-interface AddTransitionInterface {
-    withCondition: Function;
-    withRequirements: Function;
-    done: Function;
-}
 
 export default class FlowDefinition {
     private _id: any;
@@ -56,15 +41,13 @@ export default class FlowDefinition {
         return this._transitions;
     }
 
-    addTransition(t: Transition) {
+    addTransition(t: Transition) {        
+        if (this.getStep(t.origin) === null || this.getStep(t.destination) === null) {
+            throw new Error(`Cannot add transition ${t.id} origin and destination are not steps within this flow`);
+        }
+        
         this._transitions.push(t);
         return this;
-    }
-
-    createTransition(originId: any, destinationId: any, condition?: TransitionCondition, requirements?: Array<Requirements>) {        
-        return this.addTransition(
-            createTransition(this, originId.toString(), destinationId.toString(), condition, requirements)
-        );
     }
 
     removeTransitionById(id: any) {
@@ -72,28 +55,9 @@ export default class FlowDefinition {
         return this;
     }
 
-    addStep(step: StepDefinition): AddStepInterface {
+    addStep(step: StepDefinition) {
         this._steps.push(step);
-        let self = this;
-        return {
-            done: function() {
-                return self;
-            },
-            afterStep: function(previousStepId: any, condition?: TransitionCondition, requirements?: Array<Requirements>) {
-                return self.createTransition(previousStepId, step.id, condition, requirements);
-            },
-            beforeStep: function(nextStepId: any, condition?: TransitionCondition, requirements?: Array<Requirements>) {
-                return self.createTransition(step.id, nextStepId, condition, requirements);
-            },
-            betweenSteps: function(previousStepId: any, nextStepId: any) {
-                let currentTransition = self.getTransition(previousStepId, nextStepId);
-                if (currentTransition) {
-                    self.removeTransitionById(currentTransition.id);
-                }
-                return self.createTransition(previousStepId, step.id)
-                .createTransition(step.id, nextStepId);
-            }
-        }
+        return this;
     }
 
     getTransition(originId: any, destinationId: any) {
