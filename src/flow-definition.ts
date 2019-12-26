@@ -1,7 +1,7 @@
-import StepDefinition from './steps/step-definition';
-import Transition, { createTransition } from './transition';
-import FlowCondition from './flow-condition';
-import { Requirements } from './transition-requirements';
+import StepDefinition from './step/step-definition';
+import Transition, { createTransition } from './transition/transition';
+import TransitionCondition from './transition/transition-condition';
+import { Requirements } from './transition/transition-requirements';
 import { FlowStatus } from './flow-status';
 
 interface AddStepInterface {
@@ -61,7 +61,7 @@ export default class FlowDefinition {
         return this;
     }
 
-    createTransition(originId: any, destinationId: any, condition?: FlowCondition, requirements?: Array<Requirements>) {        
+    createTransition(originId: any, destinationId: any, condition?: TransitionCondition, requirements?: Array<Requirements>) {        
         return this.addTransition(
             createTransition(this, originId.toString(), destinationId.toString(), condition, requirements)
         );
@@ -79,10 +79,10 @@ export default class FlowDefinition {
             done: function() {
                 return self;
             },
-            afterStep: function(previousStepId: any, condition?: FlowCondition, requirements?: Array<Requirements>) {
+            afterStep: function(previousStepId: any, condition?: TransitionCondition, requirements?: Array<Requirements>) {
                 return self.createTransition(previousStepId, step.id, condition, requirements);
             },
-            beforeStep: function(nextStepId: any, condition?: FlowCondition, requirements?: Array<Requirements>) {
+            beforeStep: function(nextStepId: any, condition?: TransitionCondition, requirements?: Array<Requirements>) {
                 return self.createTransition(step.id, nextStepId, condition, requirements);
             },
             betweenSteps: function(previousStepId: any, nextStepId: any) {

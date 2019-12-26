@@ -1,6 +1,6 @@
 import FlowDefinition from './flow-definition';
 import FlowStep from './flow-step';
-import Transition from './transition';
+import Transition from './transition/transition';
 import { FlowStatus } from './flow-status';
 
 export default class Flow {

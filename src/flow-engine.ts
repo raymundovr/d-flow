@@ -2,9 +2,9 @@ import Flow from './flow';
 import FlowDefinition from './flow-definition';
 import FlowStep from './flow-step';
 import { FlowStatus } from './flow-status';
-import StepDefinition from './steps/step-definition';
-import Transition from './transition';
-import { Requirements } from './transition-requirements';
+import StepDefinition from './step/step-definition';
+import Transition from './transition/transition';
+import { Requirements } from './transition/transition-requirements';
 
 function haveVisitedStep(flow: Flow, stepDefinition: StepDefinition): boolean {
     return !!flow.steps.find((s: FlowStep) => s.definition.id === stepDefinition.id);

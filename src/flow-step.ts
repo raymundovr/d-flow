@@ -1,5 +1,5 @@
 import Flow from './flow';
-import StepDefinition from './steps/step-definition';
+import StepDefinition from './step/step-definition';
 
 export default class FlowStep {
     private _flow: Flow;
