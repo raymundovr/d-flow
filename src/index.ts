@@ -1,17 +1,21 @@
 import * as Engine from './flow/flow-engine';
-import { createFlowDefinition } from './flow/flow-definition';
-import { createDataInputStep } from './step/data-input-step';
+import FlowDefinition from './flow/flow-definition';
+import DataInputStep from './step/data-input-step';
+import JsonProcessor from './step/json-processor';
 import { createFieldDefinition } from './step/field-definition';
 import * as ObjectConditions from './transition/object-conditions';
 import * as Requirements from './transition/transition-requirements';
 import { FlowStatus } from './flow/flow-status';
+import { createTransition } from './transition/transition';
 
 export {
     Engine,
-    createFlowDefinition,
-    createDataInputStep,
+    FlowDefinition,
+    DataInputStep,
+    JsonProcessor,
     createFieldDefinition,
     ObjectConditions,
     Requirements,
     FlowStatus,
+    createTransition,
 };
