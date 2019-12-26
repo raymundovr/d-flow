@@ -2,39 +2,34 @@ import * as Engine from "../src/flow/flow-engine";
 import FlowDefinition from "../src/flow/flow-definition";
 import { FlowStatus } from "../src/flow/flow-status";
 import DataInputStep from "../src/step/data-input-step";
-import JsonProcessor from "../src/step/json-processor";
 import { createFieldDefinition } from "../src/step/field-definition";
 import { equals } from "../src/transition/object-conditions";
 import { requiresAll, requiresAny } from "../src/transition/transition-requirements";
 import {createTransition} from "../src/transition/transition";
 
 describe("FlowEngine", () => {
-    const createDataInputStep = (id: any, name: string): DataInputStep => {
-        return new DataInputStep(id, name, JsonProcessor);
-    };
-
     const simpleFlow = new FlowDefinition("simple", "simple")
-        .setStartStep(createDataInputStep("start", "Start Step"))
-        .addStep(createDataInputStep("a", "Step A"))
-        .addStep(createDataInputStep("b", "Step B"))
+        .setStartStep(new DataInputStep("start", "Start Step"))
+        .addStep(new DataInputStep("a", "Step A"))
+        .addStep(new DataInputStep("b", "Step B"))
         .addTransition(createTransition("start", "a"))
         .addTransition(createTransition("a", "b"))
         .setStatusOnCompletedStep("b", FlowStatus.Completed)
         ;
     const decisionFlow = new FlowDefinition("decision", "decision")
-        .setStartStep(createDataInputStep("start", "Start Decision"))
-        .addStep(createDataInputStep("a", "Step A").addField(createFieldDefinition("fa", "number", "Field A")))
-        .addStep(createDataInputStep("b1", "Step B1"))
+        .setStartStep(new DataInputStep("start", "Start Decision"))
+        .addStep(new DataInputStep("a", "Step A").addField(createFieldDefinition("fa", "number", "Field A")))
+        .addStep(new DataInputStep("b1", "Step B1"))
         .addTransition(createTransition("start", "a"))
         .addTransition(createTransition("a", "b1").setCondition(equals("fa", 10)))
         ;
 
     const parallelFlow = new FlowDefinition("parallel", "parallel")
-        .setStartStep(createDataInputStep("start", "Start Parallel"))
-        .addStep(createDataInputStep("a1", "A1"))
-        .addStep(createDataInputStep("a2", "A2"))
-        .addStep(createDataInputStep("a3", "A3"))
-        .addStep(createDataInputStep("b", "B"))
+        .setStartStep(new DataInputStep("start", "Start Parallel"))
+        .addStep(new DataInputStep("a1", "A1"))
+        .addStep(new DataInputStep("a2", "A2"))
+        .addStep(new DataInputStep("a3", "A3"))
+        .addStep(new DataInputStep("b", "B"))
         .addTransition(createTransition("start", "a1"))
         .addTransition(createTransition("start", "a2"))
         .addTransition(createTransition("start", "a3"))
@@ -44,13 +39,13 @@ describe("FlowEngine", () => {
         ;
 
     const parallelFlowWithDecision = new FlowDefinition("parallel", "parallel")
-        .setStartStep(createDataInputStep("start", "Start Parallel"))
-        .addStep(createDataInputStep("a", "A").addField(createFieldDefinition("fa", "number", "Field A")))
-        .addStep(createDataInputStep("a1", "A1"))
-        .addStep(createDataInputStep("a2", "A2"))
-        .addStep(createDataInputStep("b", "B"))
-        .addStep(createDataInputStep("c", "C"))
-        .addStep(createDataInputStep("d", "D"))
+        .setStartStep(new DataInputStep("start", "Start Parallel"))
+        .addStep(new DataInputStep("a", "A").addField(createFieldDefinition("fa", "number", "Field A")))
+        .addStep(new DataInputStep("a1", "A1"))
+        .addStep(new DataInputStep("a2", "A2"))
+        .addStep(new DataInputStep("b", "B"))
+        .addStep(new DataInputStep("c", "C"))
+        .addStep(new DataInputStep("d", "D"))
         .addTransition(createTransition("start", "a"))
         .addTransition(createTransition("a", "a1").setCondition(equals("fa", 10)))
         .addTransition(createTransition("a", "a2").setCondition(equals("fa", 20)))
@@ -63,8 +58,8 @@ describe("FlowEngine", () => {
         ;
 
     const cyclicFlow = new FlowDefinition("cyclic", "cyclic")
-        .setStartStep(createDataInputStep("start", "Start Cyclic"))
-        .addStep(createDataInputStep("a", "A"))
+        .setStartStep(new DataInputStep("start", "Start Cyclic"))
+        .addStep(new DataInputStep("a", "A"))
         .addTransition(createTransition("start", "a"))
         .addTransition(createTransition("a", "start"));
 

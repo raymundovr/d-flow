@@ -1,12 +1,13 @@
 import StepDefinition from './step-definition';
 import { FieldDefinition } from './field-definition';
 import DataProcessor from './data-processor';
+import JsonProcessor from './json-processor';
 
 export default class DataInputStep extends StepDefinition {
     private _fields: FieldDefinition[];
     public processor: DataProcessor;
 
-    constructor(id: any, name: string, processor: DataProcessor, fields: Array<FieldDefinition> = []) {
+    constructor(id: any, name: string, processor: DataProcessor = JsonProcessor, fields: Array<FieldDefinition> = []) {
         super(id, name);
         this._fields = fields;
         this.processor = processor;
