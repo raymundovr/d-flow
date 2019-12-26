@@ -50,10 +50,15 @@ export default class FlowDefinition {
         return this;
     }
 
+    removeTransition(origin: string, destination: string) {
+        this._transitions = this._transitions.filter((t: Transition) => t.origin === origin && t.destination === destination);
+        return this;
+    }
+
     removeTransitionById(id: any) {
         this._transitions = this._transitions.filter((t: Transition) => t.id !== id);
         return this;
-    }
+    }    
 
     addStep(step: StepDefinition) {
         this._steps.push(step);
