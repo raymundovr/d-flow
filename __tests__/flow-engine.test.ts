@@ -1,8 +1,8 @@
 import * as Engine from '../src/flow-engine';
 import { createFlowDefinition } from '../src/flow-definition';
 import { FlowStatus } from '../src/flow-status';
-import { createDataInputStep } from '../src/data-input-step';
-import { createFieldDefinition } from '../src/field-definition';
+import { createDataInputStep } from '../src/steps/data-input-step';
+import { createFieldDefinition } from '../src/steps/field-definition';
 import { equals } from '../src/object-conditions';
 import { requiresAll, requiresAny } from '../src/transition-requirements';
 

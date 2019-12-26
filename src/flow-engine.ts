@@ -2,7 +2,7 @@ import Flow from './flow';
 import FlowDefinition from './flow-definition';
 import FlowStep from './flow-step';
 import { FlowStatus } from './flow-status';
-import StepDefinition from './step-definition';
+import StepDefinition from './steps/step-definition';
 import Transition from './transition';
 import { Requirements } from './transition-requirements';
 

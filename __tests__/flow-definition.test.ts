@@ -1,5 +1,5 @@
 import { createFlowDefinition } from '../src/flow-definition';
-import { createDataInputStep } from '../src/data-input-step';
+import { createDataInputStep } from '../src/steps/data-input-step';
 
 describe("FlowDefinition", () => {
     test("::createFlowDefinition()", () => {

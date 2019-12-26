@@ -1,4 +1,4 @@
-import StepDefinition from './step-definition';
+import StepDefinition from './steps/step-definition';
 import Transition, { createTransition } from './transition';
 import FlowCondition from './flow-condition';
 import { Requirements } from './transition-requirements';
