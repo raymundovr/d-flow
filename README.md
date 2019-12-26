@@ -1,6 +1,5 @@
 # D-Flow
 A storage agnostic data workfow engine.
-Currently it only operates as message-passing flow which means that you cannot directly attach processes to the steps.
 
 ## Start by defining a workflow
 In order to run the engine it is necessary to define the set of steps and transitions that your data will go through on each submission, this can be performed by creating a FlowDefinition.
