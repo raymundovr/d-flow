@@ -123,10 +123,11 @@ const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
 
 ## Submissions to the Engine
 Each submission will be validated by the engine, specifically it will verify:
-- That the step that you want to reach is defined for the flow
-- That the step that you want to reach is within the range
-- If there are conditions for the transition they must be satisfied
+- That the step that you want to reach is defined for the flow.
+- That the step that you want to reach is within the range.
+- If there are conditions for the transition they must be satisfied.
 - If there are other steps marked as requirements that they are completed as well (specificaly useful on parallel branches).
+- That the required fields defined for your step (if any) are completed.
 
 
 ### Submit your data.
