@@ -14,7 +14,7 @@ At the moment the only supported data type is JSON or Javascript Object. The val
 
 A transition is a connection between your step definitions. It can have conditions and/or require that other steps are completed before being able to complete itself.
 
-## Some FlowDefinition examples
+## Examples
 
 ### A simple case
 
@@ -30,6 +30,30 @@ const simpleFlow = createFlowDefinition("simple", "simple")
     .addTransition(createTransition("a", "b"))
     .setStatusOnCompletedStep("b", FlowStatus.Completed);
 ```
+
+### Submissions to the Engine
+Each submission will be validated by the engine, specifically it will verify:
+- That the step that you want to reach is defined for the flow.
+- That the step that you want to reach is within the range.
+- If there are conditions for the transition they must be satisfied.
+- If there are other steps marked as requirements that they are completed as well (specificaly useful on parallel branches).
+- That the required fields defined for your step (if any) are completed.
+
+
+### Submit your data.
+Once your workflow is defined you can start to submit data
+
+```javascript
+const { Engine } = require('d-flow');
+let flow = Engine.create(simpleFlow);
+flow = Engine.submit(flow, {sa: "Hello"}, "start");
+flow = Engine.submit(flow, {fa: "There"}, "a");
+flow = Engine.submit(flow, {fb: "Flow"}, "b");
+```
+
+The submit function returns the modified flow instance for reuse.
+
+## More FlowDefinition Examples
 
 ### Conditional Flows
 
@@ -120,25 +144,3 @@ const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
     .addTransition(createTransition("start", "a"))
     .addTransition(createTransition("a", "start"));
 ```
-
-## Submissions to the Engine
-Each submission will be validated by the engine, specifically it will verify:
-- That the step that you want to reach is defined for the flow.
-- That the step that you want to reach is within the range.
-- If there are conditions for the transition they must be satisfied.
-- If there are other steps marked as requirements that they are completed as well (specificaly useful on parallel branches).
-- That the required fields defined for your step (if any) are completed.
-
-
-### Submit your data.
-Once your workflow is defined you can start to submit data
-
-```javascript
-const { Engine } = require('d-flow');
-let flow = Engine.create(simpleFlow);
-flow = Engine.submit(flow, {sa: "Hello"}, "start");
-flow = Engine.submit(flow, {fa: "There"}, "a");
-flow = Engine.submit(flow, {fb: "Flow"}, "b");
-```
-
-The submit function returns the modified flow instance for reuse.
