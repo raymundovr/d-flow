@@ -80,39 +80,42 @@ describe("FlowEngine", () => {
         expect(flow.currentStep!.definition).toMatchObject(simpleFlow.startStep!);
     });
 
+    it("Should fail when trying to submit a non-existent step", () => {
+        let flow = Engine.start(Engine.create(simpleFlow), {});
+        expect(() => Engine.submit(flow, {}, "non-existent")).toThrow();
+    });
+
     it("Should complete a Flow START -> A -> B", () => {
         let flow = Engine.create(simpleFlow);
         let stepA = simpleFlow.getStep("a");
         let stepB = simpleFlow.getStep("b");
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, {}, stepA!);
+        flow = Engine.submit(flow, {}, "a");
         expect(flow.currentStep).not.toBeNull();
         expect(flow.currentStep!.definition).toMatchObject(stepA!);
-        flow = Engine.submit(flow, {}, stepB!);
+        flow = Engine.submit(flow, {}, "b");
         expect(flow.currentStep).not.toBeNull();
         expect(flow.currentStep!.definition).toMatchObject(stepB!);
         expect(flow.status).toBe(FlowStatus.Completed);
     });
 
     it("Should complete a flow on a decision branch based on a condition START -> A -> (condition) -> B1", () => {
-        let flow = Engine.create(decisionFlow);
-        let stepA = decisionFlow.getStep("a");
-        let stepB1 = decisionFlow.getStep("b1");
+        let flow = Engine.create(decisionFlow);        
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, { fa: 10 }, stepA!);
-        flow = Engine.submit(flow, {}, stepB1!);
+        flow = Engine.submit(flow, { fa: 10 }, "a");
+        flow = Engine.submit(flow, {}, "b1");
         expect(flow.currentStep).not.toBeNull();
-        expect(flow.currentStep!.definition).toMatchObject(stepB1!);
+        expect(flow.currentStep!.definition).toMatchObject(decisionFlow.getStep("b1")!);
     });
 
     it("Should complete a set of parallel steps correctly in order to advance", () => {
         let flow = Engine.create(parallelFlow);
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, {}, parallelFlow.getStep("a1")!);
-        expect(() => Engine.submit(flow, {}, parallelFlow.getStep("b")!)).toThrow();
-        flow = Engine.submit(flow, {}, parallelFlow.getStep("a2")!);
-        flow = Engine.submit(flow, {}, parallelFlow.getStep("a3")!);
-        flow = Engine.submit(flow, {}, parallelFlow.getStep("b")!);
+        flow = Engine.submit(flow, {}, "a1");
+        expect(() => Engine.submit(flow, {}, "b")).toThrow();
+        flow = Engine.submit(flow, {}, "a2");
+        flow = Engine.submit(flow, {}, "a3");
+        flow = Engine.submit(flow, {}, "b");
         expect(flow.currentStep!.definition).toMatchObject(
             parallelFlow.getStep("b")!
         );
@@ -121,12 +124,12 @@ describe("FlowEngine", () => {
     it("Should complete a set of parallel steps, some of them optional due to diverge, correctly in order to advance", () => {
         let flow = Engine.create(parallelFlowWithDecision);
         flow = Engine.start(flow, {});
-        flow = Engine.submit(flow, { fa: 10 }, parallelFlowWithDecision.getStep("a")!);
-        expect(() => Engine.submit(flow, {}, parallelFlowWithDecision.getStep("d")!)).toThrow();
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("a1")!);
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("b")!);
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("c")!);
-        flow = Engine.submit(flow, {}, parallelFlowWithDecision.getStep("d")!);
+        flow = Engine.submit(flow, { fa: 10 }, "a");
+        expect(() => Engine.submit(flow, {}, "d")).toThrow();
+        flow = Engine.submit(flow, {}, "a1");
+        flow = Engine.submit(flow, {}, "b");
+        flow = Engine.submit(flow, {}, "c");
+        flow = Engine.submit(flow, {}, "d");
         expect(flow.currentStep!.definition).toMatchObject(
             parallelFlowWithDecision.getStep("d")!
         );
@@ -136,9 +139,9 @@ describe("FlowEngine", () => {
         let flow = Engine.create(cyclicFlow);
         flow = Engine.start(flow, {});
         let firstTag = flow.cycleCount; //Ensure copy
-        flow = Engine.submit(flow, {}, cyclicFlow.getStep("a")!);
+        flow = Engine.submit(flow, {}, "a");
         expect(flow.cycleCount).toEqual(firstTag);
-        flow = Engine.submit(flow, {}, cyclicFlow.getStep("start")!);
+        flow = Engine.submit(flow, {}, "start");
         expect(flow.cycleCount).not.toEqual(firstTag);
     });
 });

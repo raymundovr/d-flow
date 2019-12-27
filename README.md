@@ -3,6 +3,18 @@ A storage agnostic data workflow engine. It takes care of maintaining a valid st
 
 In order to run the engine it is first necessary to define the set of steps and transitions that your data will go through on each submission, this can be performed by creating a FlowDefinition.
 
+### Data Step Definition
+A Data Step Definition is the entity that will encapsulate your data during a specific state. 
+It can include a set of Fields to give it appropiated format. This fields have a specific data type and can be marked as required in order for the submission to be valid. The validation is performed by a Processor that can be specified per step.
+If you do not define any fields for your step then the same data that comes in during the submission will be forwarded as output.
+
+At the moment the only supported data type is JSON or Javascript Object. The validation for this data type is provided by the JSON Data Processor.
+
+### Transition
+
+A transition is a connection between your step definitions. It can have conditions and/or require that other steps are completed before being able to complete it.
+
+### Submissions to the Engine
 Each submission will be validated by the engine, specifically it will verify:
 - That the step that you want to reach is defined for the flow
 - That the step that you want to reach is within the range
@@ -12,10 +24,6 @@ Each submission will be validated by the engine, specifically it will verify:
 ## Some examples
 
 ### A simple case
-A Data Step Definition is the entity that will encapsulate your data during a specific state. It can include a set of Fields that will give it form. This fields have a specific data type and can be marked as required in order for the submission to be valid. The validation is performed by a Processor that can be specified per step.
-At the moment the only supported data type is JSON or Javascript Object. The validation for this data type is provided by the JSON Data Processor.
-
-A transition is a connection between your step definitions.
 
 ![A simple flow](https://vasquezruiz.com/pub/img/dflow/simple.png "Simple flow")
 
@@ -121,3 +129,14 @@ const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
 ```
 
 ## Submit your data.
+Once your workflow is defined you can start to submit data
+
+```javascript
+const { Engine } = require('d-flow');
+let flow = Engine.create(simpleFlow);
+flow = Engine.submit(flow, {sa: "Hello"}, "start");
+flow = Engine.submit(flow, {fa: "There"}, "a");
+flow = Engine.submit(flow, {fb: "Flow"}, "b");
+```
+
+The submit function returns the modified flow instance for reuse.

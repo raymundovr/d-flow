@@ -42,6 +42,6 @@ export default class DataInputStep extends StepDefinition {
     }
 }
 
-export function createDataInputStep(id: any, name:string) {
-    return new DataInputStep(id, name);
+export function createDataInputStep(id: any, name:string, fields?: Array<FieldDefinition>) {
+    return new DataInputStep(id, name, fields);
 }

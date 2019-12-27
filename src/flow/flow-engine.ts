@@ -50,7 +50,11 @@ function areTransitionRequirementsSatisfied(transition: Transition, flow: Flow) 
     return true;
 }
 
-export function submit(flow: Flow, data: any, stepDefinition: StepDefinition): Flow {
+export function submit(flow: Flow, data: any, stepDefinitionId: string): Flow {
+    let stepDefinition = flow.definition.getStep(stepDefinitionId);
+    if (stepDefinition === null) {
+        throw new Error(`Invalid submission for Flow ${flow.id}: step with ID ${stepDefinitionId} does not exist`);
+    }
     if (flow.hasStatus(FlowStatus.Created)) {
         if (!submittedStepIsStart(stepDefinition.id, flow.definition)) {
             throw new Error(`Invalid submission for Flow ${flow.id}: incorrect start step`);

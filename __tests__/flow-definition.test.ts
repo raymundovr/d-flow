@@ -1,11 +1,6 @@
 import FlowDefinition from '../src/flow/flow-definition';
-import DataInputStep from '../src/step/data-input-step';
-import JsonDataStep from '../src/step/json-processor';
+import {createDataInputStep} from '../src/step/data-input-step';
 import { createTransition } from '../src/transition/transition';
-
-const createDataInputStep = (id: any, name: string): DataInputStep => {
-    return new DataInputStep(id, name, JsonDataStep);
-};
 
 describe("FlowDefinition", () => {
     test("::new FlowDefinition()", () => {
