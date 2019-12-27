@@ -12,16 +12,9 @@ At the moment the only supported data type is JSON or Javascript Object. The val
 
 ### Transition
 
-A transition is a connection between your step definitions. It can have conditions and/or require that other steps are completed before being able to complete it.
+A transition is a connection between your step definitions. It can have conditions and/or require that other steps are completed before being able to complete itself.
 
-### Submissions to the Engine
-Each submission will be validated by the engine, specifically it will verify:
-- That the step that you want to reach is defined for the flow
-- That the step that you want to reach is within the range
-- If there are conditions for the transition they must be satisfied
-- If there are other steps marked as requirements that they are completed as well (specificaly useful on parallel branches).
-
-## Some examples
+## Some FlowDefinition examples
 
 ### A simple case
 
@@ -128,7 +121,15 @@ const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
     .addTransition(createTransition("a", "start"));
 ```
 
-## Submit your data.
+## Submissions to the Engine
+Each submission will be validated by the engine, specifically it will verify:
+- That the step that you want to reach is defined for the flow
+- That the step that you want to reach is within the range
+- If there are conditions for the transition they must be satisfied
+- If there are other steps marked as requirements that they are completed as well (specificaly useful on parallel branches).
+
+
+### Submit your data.
 Once your workflow is defined you can start to submit data
 
 ```javascript
