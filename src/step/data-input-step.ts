@@ -7,7 +7,7 @@ export default class DataInputStep extends StepDefinition {
     private _fields: FieldDefinition[];
     public processor: DataProcessor;
 
-    constructor(id: any, name: string, processor: DataProcessor = JsonProcessor, fields: Array<FieldDefinition> = []) {
+    constructor(id: any, name: string, fields: Array<FieldDefinition> = [], processor: DataProcessor = JsonProcessor) {
         super(id, name);
         this._fields = fields;
         this.processor = processor;
@@ -40,4 +40,8 @@ export default class DataInputStep extends StepDefinition {
     process(data: any) : any {
         return this.processor.process(this, data);
     }
+}
+
+export function createDataInputStep(id: any, name:string) {
+    return new DataInputStep(id, name);
 }

@@ -95,3 +95,7 @@ export default class FlowDefinition {
             this._statusToApplyOnStepCompletion[stepId.toString()] : undefined;
     }
 }
+
+export function createFlowDefinition(id: any, description: string) {
+    return new FlowDefinition(id, description);
+}
