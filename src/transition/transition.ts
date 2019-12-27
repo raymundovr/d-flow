@@ -3,16 +3,19 @@ import TransitionCondition from './transition-condition';
 import { Requirements } from './transition-requirements';
 
 export default class Transition {
-    private _id: string;    
+    private _id: string;
     private _origin: string;
     private _destination: string;
-    private _condition? : TransitionCondition;
-    private _requirements? : Array<Requirements>;
+    private _condition?: TransitionCondition;
+    private _requirements?: Array<Requirements>;
 
-    constructor(origin: string, destination: string, 
-        condition?: TransitionCondition, requirements?: Array<Requirements>)
-    {
-        this._id = `${origin}-${destination}`;        
+    constructor(
+        origin: string,
+        destination: string,
+        condition?: TransitionCondition,
+        requirements?: Array<Requirements>,
+    ) {
+        this._id = `${origin}-${destination}`;
         this._origin = origin;
         this._destination = destination;
         this._condition = condition;
@@ -50,16 +53,11 @@ export default class Transition {
     }
 }
 
-export function createTransition(    
+export function createTransition(
     origin: string,
     destination: string,
     condition?: TransitionCondition,
     requirements?: Array<Requirements>,
 ): Transition {
-    return new Transition(                
-        origin,
-        destination,
-        condition,
-        requirements,
-    );
+    return new Transition(origin, destination, condition, requirements);
 }

@@ -16,5 +16,5 @@ export default abstract class StepDefinition {
         return this._output;
     }
 
-    abstract process(data: any) : any;
+    abstract process(data: any): any;
 }

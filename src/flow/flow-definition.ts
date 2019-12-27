@@ -41,7 +41,7 @@ export default class FlowDefinition {
         return this._transitions;
     }
 
-    addTransition(t: Transition) {        
+    addTransition(t: Transition) {
         if (this.getStep(t.origin) === null || this.getStep(t.destination) === null) {
             throw new Error(`Cannot add transition ${t.id} origin and destination are not steps within this flow`);
         }
@@ -51,14 +51,16 @@ export default class FlowDefinition {
     }
 
     removeTransition(origin: string, destination: string) {
-        this._transitions = this._transitions.filter((t: Transition) => t.origin === origin && t.destination === destination);
+        this._transitions = this._transitions.filter(
+            (t: Transition) => t.origin === origin && t.destination === destination,
+        );
         return this;
     }
 
     removeTransitionById(id: any) {
         this._transitions = this._transitions.filter((t: Transition) => t.id !== id);
         return this;
-    }    
+    }
 
     addStep(step: StepDefinition) {
         this._steps.push(step);
@@ -66,7 +68,9 @@ export default class FlowDefinition {
     }
 
     getTransition(originId: any, destinationId: any) {
-        return this.transitions.find((t: Transition) => t.origin === originId && t.destination === destinationId) || null;
+        return (
+            this.transitions.find((t: Transition) => t.origin === originId && t.destination === destinationId) || null
+        );
     }
 
     getTransitionsFrom(id: any) {
@@ -90,9 +94,10 @@ export default class FlowDefinition {
         return this;
     }
 
-    getStatusOnCompletedStep(stepId:any): FlowStatus | undefined {
-        return stepId.toString() in this._statusToApplyOnStepCompletion ? 
-            this._statusToApplyOnStepCompletion[stepId.toString()] : undefined;
+    getStatusOnCompletedStep(stepId: any): FlowStatus | undefined {
+        return stepId.toString() in this._statusToApplyOnStepCompletion
+            ? this._statusToApplyOnStepCompletion[stepId.toString()]
+            : undefined;
     }
 }
 

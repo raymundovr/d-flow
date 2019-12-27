@@ -34,7 +34,7 @@ export default class Flow {
         return this._createdAt;
     }
 
-    get currentStep(): FlowStep | null {        
+    get currentStep(): FlowStep | null {
         return this._currentStep;
     }
 

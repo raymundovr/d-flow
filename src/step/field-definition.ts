@@ -10,6 +10,6 @@ export function createFieldDefinition(id: any, fieldType: string, prompt: string
         id,
         fieldType,
         prompt,
-        required
+        required,
     };
 }

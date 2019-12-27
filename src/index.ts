@@ -1,5 +1,5 @@
 import * as Engine from './flow/flow-engine';
-import FlowDefinition, {createFlowDefinition} from './flow/flow-definition';
+import FlowDefinition, { createFlowDefinition } from './flow/flow-definition';
 import DataInputStep, { createDataInputStep } from './step/data-input-step';
 import JsonProcessor from './step/json-processor';
 import { createFieldDefinition } from './step/field-definition';
@@ -20,5 +20,5 @@ export {
     Requirements,
     FlowStatus,
     createTransition,
-    Transition
+    Transition,
 };

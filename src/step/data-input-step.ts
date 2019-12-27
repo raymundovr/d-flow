@@ -37,11 +37,11 @@ export default class DataInputStep extends StepDefinition {
         return this._fields.find((f: FieldDefinition) => f.id === id) || null;
     }
 
-    process(data: any) : any {
+    process(data: any): any {
         return this.processor.process(this, data);
     }
 }
 
-export function createDataInputStep(id: any, name:string, fields?: Array<FieldDefinition>) {
+export function createDataInputStep(id: any, name: string, fields?: Array<FieldDefinition>) {
     return new DataInputStep(id, name, fields);
 }
