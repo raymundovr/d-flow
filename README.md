@@ -1,6 +1,11 @@
 # D-Flow
 A storage agnostic data workflow engine. It takes care of maintaining a valid state for your multi-step processes.
 
+Install it via NPM
+```bash
+npm i @d-flow/engine
+```
+
 In order to run the engine it is first necessary to define the set of steps and transitions that your data will go through on each submission, this set is maintained within a FlowDefinition.
 
 ### Data Step Definition
