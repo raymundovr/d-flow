@@ -17,7 +17,7 @@ class JsonProcessor implements DataProcessor  {
 
     isValid(definition: DataInputStep, data: {[key: string]: any}): boolean {
         let requiredFields = definition.fields.filter((f: FieldDefinition) => f.required);
-        let submittedFields = Object.keys(data);        
+        let submittedFields = Object.keys(data);
         return requiredFields.every((f: FieldDefinition) => 
             (f.id in submittedFields) && this.isNotEmpty(data[f.id])
         );
@@ -29,6 +29,11 @@ class JsonProcessor implements DataProcessor  {
             throw new Error(`Invalid JSON Data step`);
         }
         let definedFields = definition.fields.map((f: FieldDefinition) => f.id);
+        
+        if (definedFields.length === 0) {
+            return normalized;
+        }
+
         let output: {[key: string]: any} = {};
         for (let key of Object.keys(normalized)) {            
             if (definedFields.includes(key)) {                
