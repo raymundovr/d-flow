@@ -1,7 +1,7 @@
 export default abstract class StepDefinition {
-    protected _id: any;
-    protected _output: any;
     public name: string;
+    protected _id: any;
+    protected _output: any;    
 
     constructor(id: any, name: string) {
         this._id = id;
@@ -16,5 +16,5 @@ export default abstract class StepDefinition {
         return this._output;
     }
 
-    abstract process(data: any): any;
+    public abstract process(data: any): any;
 }

@@ -1,18 +1,18 @@
 import Flow from './flow';
 import FlowDefinition from './flow-definition';
-import FlowStep from './flow-step';
 import { FlowStatus } from './flow-status';
+import FlowStep from './flow-step';
 import StepDefinition from '../step/step-definition';
 import Transition from '../transition/transition';
-import { Requirements } from '../transition/transition-requirements';
+import Requirements from '../transition/transition-requirements';
 
 function haveVisitedStep(flow: Flow, stepDefinition: StepDefinition): boolean {
     return !!flow.steps.find((s: FlowStep) => s.definition.id === stepDefinition.id);
 }
 
 export function create(definition: FlowDefinition): Flow {
-    //TODO: Replace id generation
-    let id = definition.id.toString() + new Date().toTimeString();
+    // TODO: Replace id generation
+    const id = definition.id.toString() + new Date().toTimeString();
     return new Flow(id, definition);
 }
 
@@ -51,7 +51,7 @@ function areTransitionRequirementsSatisfied(transition: Transition, flow: Flow) 
 }
 
 export function submit(flow: Flow, data: any, stepDefinitionId: string): Flow {
-    let stepDefinition = flow.definition.getStep(stepDefinitionId);
+    const stepDefinition = flow.definition.getStep(stepDefinitionId);
     if (stepDefinition === null) {
         throw new Error(`Invalid submission for Flow ${flow.id}: step with ID ${stepDefinitionId} does not exist`);
     }
@@ -66,7 +66,7 @@ export function submit(flow: Flow, data: any, stepDefinitionId: string): Flow {
         throw new Error(`Cannot advance Flow ${flow.id}: Advance can only be applied to Active Flows`);
     }
 
-    let transitionToSubmitted = flow.getTransitionToStepWithId(stepDefinition.id);
+    const transitionToSubmitted = flow.getTransitionToStepWithId(stepDefinition.id);
 
     if (!transitionToSubmitted) {
         throw new Error(
@@ -74,7 +74,7 @@ export function submit(flow: Flow, data: any, stepDefinitionId: string): Flow {
         );
     }
 
-    let lastStepFromOrigin = flow.getLastSubmittedStepWithDefinitionId(transitionToSubmitted.origin);
+    const lastStepFromOrigin = flow.getLastSubmittedStepWithDefinitionId(transitionToSubmitted.origin);
     if (!lastStepFromOrigin) {
         throw new Error(
             `Cannot advance Flow ${flow.id}: Cannot find last submitted step with step definition ${transitionToSubmitted.origin}`,
@@ -97,7 +97,7 @@ export function submit(flow: Flow, data: any, stepDefinitionId: string): Flow {
         flow.increaseCycleCount();
     }
 
-    let output = stepDefinition.process(data);
+    const output = stepDefinition.process(data);
     flow.currentStep = new FlowStep(flow, stepDefinition, output, lastStepFromOrigin);
     flow.lastTransition = transitionToSubmitted;
     return flow;

@@ -2,12 +2,12 @@ import Flow from './flow';
 import StepDefinition from '../step/step-definition';
 
 export default class FlowStep {
+    public completedAt: Date;
+    public data: any;
     private _flow: Flow;
     private _definition: StepDefinition;
     private _flowCycle: number;
-    private _origin: FlowStep | null;
-    public completedAt: Date;
-    public data: any;
+    private _origin: FlowStep | null;    
 
     constructor(flow: Flow, definition: StepDefinition, data: any, origin: FlowStep | null) {
         this._flow = flow;

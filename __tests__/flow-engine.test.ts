@@ -4,7 +4,8 @@ import { FlowStatus } from "../src/flow/flow-status";
 import DataInputStep from "../src/step/data-input-step";
 import { createFieldDefinition } from "../src/step/field-definition";
 import { equals } from "../src/transition/object-conditions";
-import { requiresAll, requiresAny } from "../src/transition/transition-requirements";
+import { requiresAll } from "../src/transition/transition-requires-all";
+import { requiresAny } from "../src/transition/transition-requires-any";
 import {createTransition} from "../src/transition/transition";
 
 describe("FlowEngine", () => {

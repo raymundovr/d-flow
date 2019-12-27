@@ -1,19 +1,18 @@
-import FlowDefinition from '../flow/flow-definition';
 import TransitionCondition from './transition-condition';
-import { Requirements } from './transition-requirements';
+import Requirements from './transition-requirements';
 
 export default class Transition {
     private _id: string;
     private _origin: string;
     private _destination: string;
     private _condition?: TransitionCondition;
-    private _requirements?: Array<Requirements>;
+    private _requirements?: Requirements[];
 
     constructor(
         origin: string,
         destination: string,
         condition?: TransitionCondition,
-        requirements?: Array<Requirements>,
+        requirements?: Requirements[],
     ) {
         this._id = `${origin}-${destination}`;
         this._origin = origin;
@@ -38,7 +37,7 @@ export default class Transition {
         return this._condition;
     }
 
-    setCondition(value: TransitionCondition) {
+    public setCondition(value: TransitionCondition) {
         this._condition = value;
         return this;
     }
@@ -47,7 +46,7 @@ export default class Transition {
         return this._requirements;
     }
 
-    setRequirements(value: Array<Requirements>) {
+    public setRequirements(value: Requirements[]) {
         this._requirements = value;
         return this;
     }
@@ -57,7 +56,7 @@ export function createTransition(
     origin: string,
     destination: string,
     condition?: TransitionCondition,
-    requirements?: Array<Requirements>,
+    requirements?: Requirements[],
 ): Transition {
     return new Transition(origin, destination, condition, requirements);
 }

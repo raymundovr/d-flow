@@ -1,7 +1,7 @@
 {
     "name": "d-flow",
     "version": "1.0.0",
-    "description": "Data driven workflows for interactive and multi-user projects",
+    "description": "A storage agnostic workflow engine in continous development",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
     "scripts": {

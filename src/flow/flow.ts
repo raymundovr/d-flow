@@ -4,14 +4,14 @@ import Transition from '../transition/transition';
 import { FlowStatus } from './flow-status';
 
 export default class Flow {
+    public lastTransition?: Transition;
+    public status: FlowStatus;
     private _id: any;
     private _createdAt: Date;
     private _definition: FlowDefinition;
     private _steps: FlowStep[] = [];
     private _currentStep: FlowStep | null;
-    private _cycleCount: number;
-    public lastTransition?: Transition;
-    public status: FlowStatus;
+    private _cycleCount: number;    
 
     constructor(id: any, definition: FlowDefinition) {
         this._id = id;
@@ -59,15 +59,15 @@ export default class Flow {
         return this._cycleCount;
     }
 
-    increaseCycleCount(): void {
+    public increaseCycleCount(): void {
         this._cycleCount += 1;
     }
 
-    hasStatus(status: FlowStatus) {
+    public hasStatus(status: FlowStatus) {
         return this.status === status;
     }
 
-    getTransitionFromCurrentStepTo(stepId: any): Transition | null {
+    public getTransitionFromCurrentStepTo(stepId: any): Transition | null {
         if (!this.currentStep) {
             return null;
         }
@@ -75,25 +75,25 @@ export default class Flow {
         return this.definition.getTransition(this.currentStep.definitionId, stepId);
     }
 
-    getTransitionFromStepsTo(stepId: any): Transition[] {
-        let transitionsTo = this.definition.getTransitionsTo(stepId);
+    public getTransitionFromStepsTo(stepId: any): Transition[] {
+        const transitionsTo = this.definition.getTransitionsTo(stepId);
         return transitionsTo.filter((t: Transition) => this.visitedStepDefinitionsId.includes(t.origin));
     }
 
-    getTransitionFromLastStepTo(stepId: any): Transition | null {
-        let transitions = this.getTransitionFromStepsTo(stepId);
+    public getTransitionFromLastStepTo(stepId: any): Transition | null {
+        const transitions = this.getTransitionFromStepsTo(stepId);
         if (transitions.length === 0) {
             return null;
         } else if (transitions.length === 1) {
             return transitions[0];
         }
 
-        let lastSubmitted = this.getLastSubmittedStepDefinitionIdInIds(transitions.map((t: Transition) => t.origin));
+        const lastSubmitted = this.getLastSubmittedStepDefinitionIdInIds(transitions.map((t: Transition) => t.origin));
 
         return transitions.find((t: Transition) => t.origin === lastSubmitted) || null;
     }
 
-    getTransitionToStepWithId(stepId: any): Transition | null {
+    public getTransitionToStepWithId(stepId: any): Transition | null {
         return this.getTransitionFromCurrentStepTo(stepId) || this.getTransitionFromLastStepTo(stepId);
     }
 
@@ -109,8 +109,8 @@ export default class Flow {
         return this.definition.getTransition(this.currentStep!.definitionId, this.currentStep!.origin!.definitionId);
     }
 
-    getLastSubmittedStepDefinitionIdInIds(ids: any[]): any {
-        let observables = this._steps.filter((s: FlowStep) => ids.includes(s.definitionId));
+    public getLastSubmittedStepDefinitionIdInIds(ids: any[]): any {
+        const observables = this._steps.filter((s: FlowStep) => ids.includes(s.definitionId));
         if (observables.length === 0) {
             return null;
         }
@@ -119,7 +119,7 @@ export default class Flow {
         return observables[0].definitionId;
     }
 
-    getLastSubmittedStepWithDefinitionId(id: any): FlowStep | null {
+    public getLastSubmittedStepWithDefinitionId(id: any): FlowStep | null {
         return this._steps.find((s: FlowStep) => s.definitionId === id) || null;
     }
 }
