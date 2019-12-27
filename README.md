@@ -32,16 +32,15 @@ const simpleFlow = createFlowDefinition("simple", "simple")
 ```
 
 ### Submissions to the Engine
+
+Once your workflow is defined you can start to submit data.
+
 Each submission will be validated by the engine, specifically it will verify:
 - That the step that you want to reach is defined for the flow.
 - That the step that you want to reach is within the range.
 - If there are conditions for the transition they must be satisfied.
 - If there are other steps marked as requirements that they are completed as well (specificaly useful on parallel branches).
 - That the required fields defined for your step (if any) are completed.
-
-
-### Submit your data.
-Once your workflow is defined you can start to submit data
 
 ```javascript
 const { Engine } = require('d-flow');
