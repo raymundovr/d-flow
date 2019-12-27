@@ -21,7 +21,7 @@ A transition is a connection between your step definitions. It can have conditio
 ![A simple flow](https://vasquezruiz.com/pub/img/dflow/simple.png "Simple flow")
 
 ```javascript
-const { createDataInputStep, createFlowDefinition, createTransition, createFieldDefinition, FlowStatus } = require('d-flow');
+const { createDataInputStep, createFlowDefinition, createTransition, createFieldDefinition, FlowStatus } = require('@d-flow/engine');
 const simpleFlow = createFlowDefinition("simple", "simple")
     .setStartStep(createDataInputStep("start", "Start Step").addField(createFieldDefinition("sa", "string", "Start A")))
     .addStep(createDataInputStep("a", "Step A").addField(createFieldDefinition("fa", "number", "Field A")))
@@ -43,7 +43,7 @@ Each submission will be validated by the engine, specifically it will verify:
 - That the required fields defined for your step (if any) are completed.
 
 ```javascript
-const { Engine } = require('d-flow');
+const { Engine } = require('@d-flow/engine');
 let flow = Engine.create(simpleFlow);
 flow = Engine.submit(flow, {sa: "Hello"}, "start");
 flow = Engine.submit(flow, {fa: "There"}, "a");
@@ -60,7 +60,7 @@ A transition can also have a condition, which is a data value to be matched agai
 
 ![A conditional flow](https://vasquezruiz.com/pub/img/dflow/condition.png "Conditional flow")
 ```javascript
-const { createDataInputStep, createFlowDefinition, createTransition, createFieldDefinition, ObjectConditions} = require('d-flow');
+const { createDataInputStep, createFlowDefinition, createTransition, createFieldDefinition, ObjectConditions} = require('@d-flow/engine');
 const decisionFlow = createFlowDefinition("decision", "decision")
     .setStartStep(createDataInputStep("start", "Start Decision"))
     .addStep(createDataInputStep("a", "Step A").addField(createFieldDefinition("fa", "number", "Field A")))
@@ -83,7 +83,7 @@ A transition can also require other steps to be completed in order to advance.
 
 ![A parallel flow](https://vasquezruiz.com/pub/img/dflow/parallel.png "Parallel flow")
 ```javascript
-const { createDataInputStep, createFlowDefinition, createTransition, Requirements} = require('d-flow');
+const { createDataInputStep, createFlowDefinition, createTransition, Requirements} = require('@d-flow/engine');
 
 const parallelFlow = createFlowDefinition("parallel", "parallel")
     .setStartStep(createDataInputStep("start", "Start Parallel"))
@@ -107,7 +107,7 @@ A combination of a parallel flow that includes conditionals.
 ![A conditional flow](https://vasquezruiz.com/pub/img/dflow/parallel-condition.png "Parallel Conditional flow")
 
 ```javascript
-const { createDataInputStep, createFlowDefinition, createTransition, createFieldDefinition, ObjectConditions, Requirements} = require('d-flow');
+const { createDataInputStep, createFlowDefinition, createTransition, createFieldDefinition, ObjectConditions, Requirements} = require('@d-flow/engine');
 
 const parallelFlowWithDecision = createFlowDefinition("parallel", "parallel")
     .setStartStep(createDataInputStep("start", "Start Parallel"))
@@ -136,7 +136,7 @@ Every time you run into a cycle an internal cycle count for the flow gets increa
 ![A cyclic flow](https://vasquezruiz.com/pub/img/dflow/cycle.png "Cyclic flow")
 
 ```javascript
-const { createDataInputStep, createFlowDefinition, createTransition } = require('d-flow');
+const { createDataInputStep, createFlowDefinition, createTransition } = require('@d-flow/engine');
 const cyclicFlow = createFlowDefinition("cyclic", "cyclic")
     .setStartStep(createDataInputStep("start", "Start Cyclic"))
     .addStep(createDataInputStep("a", "A"))
