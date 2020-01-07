@@ -7,7 +7,7 @@ export default class FlowStep {
     private _flow: Flow;
     private _definition: StepDefinition;
     private _flowCycle: number;
-    private _origin: FlowStep | null;    
+    private _origin: FlowStep | null;
 
     constructor(flow: Flow, definition: StepDefinition, data: any, origin: FlowStep | null) {
         this._flow = flow;

@@ -10,9 +10,16 @@ function haveVisitedStep(flow: Flow, stepDefinition: StepDefinition): boolean {
     return !!flow.steps.find((s: FlowStep) => s.definition.id === stepDefinition.id);
 }
 
+function generateSuffix(): string {
+    const pseudorand = Math.random().toString(16);
+    const now = new Date().getTime().toString();
+    return pseudorand.substring(pseudorand.length - 2) + now.substring(now.length - 4);
+}
+
 export function create(definition: FlowDefinition): Flow {
     // TODO: Replace id generation
-    const id = definition.id.toString() + new Date().toTimeString();
+    const suffix = generateSuffix();
+    const id = `${definition.id.toString()}-${suffix}`;
     return new Flow(id, definition);
 }
 

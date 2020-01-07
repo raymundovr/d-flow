@@ -6,7 +6,7 @@ import { createFieldDefinition } from "../src/step/field-definition";
 import { equals } from "../src/transition/object-conditions";
 import { requiresAll } from "../src/transition/transition-requires-all";
 import { requiresAny } from "../src/transition/transition-requires-any";
-import {createTransition} from "../src/transition/transition";
+import { createTransition } from "../src/transition/transition";
 
 describe("FlowEngine", () => {
     const simpleFlow = new FlowDefinition("simple", "simple")
@@ -77,7 +77,7 @@ describe("FlowEngine", () => {
             Engine.create(simpleFlow),
             {}
         );
-        expect(flow.currentStep).not.toBeNull();        
+        expect(flow.currentStep).not.toBeNull();
         expect(flow.currentStep!.definition).toMatchObject(simpleFlow.startStep!);
     });
 
@@ -98,10 +98,17 @@ describe("FlowEngine", () => {
         expect(flow.currentStep).not.toBeNull();
         expect(flow.currentStep!.definition).toMatchObject(stepB!);
         expect(flow.status).toBe(FlowStatus.Completed);
+        expect(flow.toObject()).toMatchObject({
+            status: "COMPLETED",
+            definition: "simple",
+            steps: ['start', 'a', 'b'],
+            currentStep: 'b',
+            cycleCount: 0,
+        });
     });
 
     it("Should complete a flow on a decision branch based on a condition START -> A -> (condition) -> B1", () => {
-        let flow = Engine.create(decisionFlow);        
+        let flow = Engine.create(decisionFlow);
         flow = Engine.start(flow, {});
         flow = Engine.submit(flow, { fa: 10 }, "a");
         flow = Engine.submit(flow, {}, "b1");

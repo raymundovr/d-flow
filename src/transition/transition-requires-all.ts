@@ -1,5 +1,5 @@
 import Requirements from './transition-requirements';
-import Flow from "../flow/flow";
+import Flow from '../flow/flow';
 
 export default class AllRequirements extends Requirements {
     public isSatisfied(flow: Flow): boolean {

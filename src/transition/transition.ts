@@ -8,12 +8,7 @@ export default class Transition {
     private _condition?: TransitionCondition;
     private _requirements?: Requirements[];
 
-    constructor(
-        origin: string,
-        destination: string,
-        condition?: TransitionCondition,
-        requirements?: Requirements[],
-    ) {
+    constructor(origin: string, destination: string, condition?: TransitionCondition, requirements?: Requirements[]) {
         this._id = `${origin}-${destination}`;
         this._origin = origin;
         this._destination = destination;

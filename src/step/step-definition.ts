@@ -1,7 +1,7 @@
 export default abstract class StepDefinition {
     public name: string;
     protected _id: any;
-    protected _output: any;    
+    protected _output: any;
 
     constructor(id: any, name: string) {
         this._id = id;

@@ -4,7 +4,7 @@ import { FlowStatus } from './flow-status';
 
 export default class FlowDefinition {
     public description: string;
-    private _id: any;    
+    private _id: any;
     private _transitions: Transition[] = [];
     private _steps: StepDefinition[] = [];
     private _startStep: StepDefinition | null = null;

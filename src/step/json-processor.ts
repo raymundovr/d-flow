@@ -39,7 +39,7 @@ class JsonProcessor implements DataProcessor {
         const requiredFields = definition.fields.filter((f: FieldDefinition) => f.required);
         const submittedFields = Object.keys(data);
         return requiredFields.every((f: FieldDefinition) => f.id in submittedFields && this.isNotEmpty(data[f.id]));
-    }    
+    }
 }
 
 export default new JsonProcessor();

@@ -8,16 +8,18 @@ export default class Flow {
     public status: FlowStatus;
     private _id: any;
     private _createdAt: Date;
+    private _lastUpdatedAt: Date;
     private _definition: FlowDefinition;
     private _steps: FlowStep[] = [];
     private _currentStep: FlowStep | null;
-    private _cycleCount: number;    
+    private _cycleCount: number;
 
     constructor(id: any, definition: FlowDefinition) {
         this._id = id;
         this._currentStep = null;
         this._definition = definition;
         this._createdAt = new Date();
+        this._lastUpdatedAt = new Date();
         this.status = FlowStatus.Created;
         this._cycleCount = 0;
     }
@@ -34,6 +36,10 @@ export default class Flow {
         return this._createdAt;
     }
 
+    get lastUpdatedAt(): Date {
+        return this._lastUpdatedAt;
+    }
+
     get currentStep(): FlowStep | null {
         return this._currentStep;
     }
@@ -45,6 +51,7 @@ export default class Flow {
         this.status = this.definition.getStatusOnCompletedStep(step.definitionId) || this.status;
         this._currentStep = step;
         this._steps.push(step);
+        this._lastUpdatedAt = new Date();
     }
 
     get steps(): FlowStep[] {
@@ -121,5 +128,18 @@ export default class Flow {
 
     public getLastSubmittedStepWithDefinitionId(id: any): FlowStep | null {
         return this._steps.find((s: FlowStep) => s.definitionId === id) || null;
+    }
+
+    public toObject() {
+        return {
+            id: this._id,
+            createdAt: this._createdAt,
+            lastUpdatedAt: this._lastUpdatedAt,
+            status: this.status,
+            definition: this.definition.id,
+            steps: this.steps.map((s: FlowStep) => s.definitionId),
+            currentStep: this._currentStep !== null ? this._currentStep.definitionId : null,
+            cycleCount: this._cycleCount,
+        };
     }
 }

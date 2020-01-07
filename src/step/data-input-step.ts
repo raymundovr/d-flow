@@ -5,7 +5,7 @@ import JsonProcessor from './json-processor';
 
 export default class DataInputStep extends StepDefinition {
     public processor: DataProcessor;
-    private _fields: FieldDefinition[];    
+    private _fields: FieldDefinition[];
 
     constructor(id: any, name: string, fields: FieldDefinition[] = [], processor: DataProcessor = JsonProcessor) {
         super(id, name);

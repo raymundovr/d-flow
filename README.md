@@ -6,7 +6,7 @@ Install it via NPM
 npm i @d-flow/engine
 ```
 
-In order to run the engine it is first necessary to define the set of steps and transitions that your data will go through on each submission, this set is maintained within a FlowDefinition.
+In order to run the engine its first necessary to define the set of steps and transitions that your data will go through on each submission, this set is maintained within a FlowDefinition.
 
 ### Data Step Definition
 A Data Step Definition is the entity that will encapsulate your data during a specific state. 
@@ -56,6 +56,35 @@ flow = Engine.submit(flow, {fb: "Flow"}, "b");
 ```
 
 The submit function returns the modified flow instance for reuse.
+
+### The Flow Object
+
+The Flow object holds different information relevant to the process such as:
+- ```createdAt```: creation Date for the flow.
+- ```lastUpdatedAt```: last update Date for the flow.
+- ```currentStep```: hols a reference to the last accepted step.
+- ```steps```: an array containing all the visited steps.
+- ```cycleCount```: a counter that increases when a cycle is detected.
+- ```status```: a value that indicates the current flow status (see below).
+
+### The Flow Status
+
+A flow can hold different single statuses during its execution such as:
+- Created: the initial status, obtained when calling Engine.create().
+- Active: indicates that a flow can still receive step submissions.
+- Completed: indicates that a flow has arrived to a final controlled status and it's no longer able to receive step submissions.
+- Cancelled: indicates that a flow has arrived to a final non successful status.
+- Error: indicates an exceptional status.
+
+#### Changing a status
+
+_Created_ and _Active_ are currently the only statuses managed by the Engine. In order to apply a different status to your Flow it is necessary to indicate it as part of the flow definition using the function setStatusOnCompletedStep() as indicated above
+```javascript
+const simpleFlow = createFlowDefinition("simple", "simple")
+	[...]
+    .setStatusOnCompletedStep("b", FlowStatus.Completed);
+```
+This indicates that when the step _"b"_ defined for the flow is submited and accepted the flow status will change to _Completed_.
 
 ## More FlowDefinition Examples
 
