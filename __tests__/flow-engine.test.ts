@@ -101,8 +101,6 @@ describe("FlowEngine", () => {
         expect(flow.toObject()).toMatchObject({
             status: "COMPLETED",
             definition: "simple",
-            steps: ['start', 'a', 'b'],
-            currentStep: 'b',
             cycleCount: 0,
         });
     });

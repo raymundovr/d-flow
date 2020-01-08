@@ -37,4 +37,15 @@ export default class FlowStep {
     get definitionId(): any {
         return this._definition.id;
     }
+
+    public toObject(): object {
+        return {
+            flow: this._flow.id,
+            definition: this._definition.id,
+            completedAt: this.completedAt,
+            data: this.data,
+            origin: this._origin !== null ? this._origin.toObject() : null,
+            flowCycle: this._flowCycle,
+        };
+    }
 }

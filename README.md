@@ -67,6 +67,8 @@ The Flow object holds different information relevant to the process such as:
 - ```cycleCount```: a counter that increases when a cycle is detected.
 - ```status```: a value that indicates the current flow status (see below).
 
+You can invoke the function ```toObject()``` on a flow instance to obtain an object representation.
+
 ### The Flow Status
 
 A flow can hold different single statuses during its execution such as:

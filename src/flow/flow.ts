@@ -130,15 +130,15 @@ export default class Flow {
         return this._steps.find((s: FlowStep) => s.definitionId === id) || null;
     }
 
-    public toObject() {
+    public toObject(): object {
         return {
             id: this._id,
             createdAt: this._createdAt,
             lastUpdatedAt: this._lastUpdatedAt,
             status: this.status,
             definition: this.definition.id,
-            steps: this.steps.map((s: FlowStep) => s.definitionId),
-            currentStep: this._currentStep !== null ? this._currentStep.definitionId : null,
+            steps: this.steps.map((s: FlowStep) => s.toObject()),
+            currentStep: this._currentStep !== null ? this._currentStep.toObject() : null,
             cycleCount: this._cycleCount,
         };
     }
