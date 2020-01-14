@@ -7,6 +7,7 @@ import * as ObjectConditions from './transition/object-conditions';
 import * as Requirements from './transition/transition-requirements';
 import { FlowStatus } from './flow/flow-status';
 import Transition, { createTransition } from './transition/transition';
+import FlowEventEmitter from './event-emitter/flow-event-emitter';
 
 export {
     Engine,
@@ -21,4 +22,5 @@ export {
     FlowStatus,
     createTransition,
     Transition,
+    FlowEventEmitter,
 };
