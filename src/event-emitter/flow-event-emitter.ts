@@ -11,7 +11,7 @@ class FlowEventEmitter extends EventEmitter {
             this.emit('flow-exception', {
                 action: 'create',
                 exception: ex,
-                subject: definition
+                subject: definition,
             });
         }
     }
@@ -23,7 +23,7 @@ class FlowEventEmitter extends EventEmitter {
             this.emit('flow-exception', {
                 action: 'start',
                 exception: ex,
-                subject: flow
+                subject: flow,
             });
         }
     }
@@ -35,7 +35,7 @@ class FlowEventEmitter extends EventEmitter {
             this.emit('flow-exception', {
                 action: 'submit',
                 exception: ex,
-                subject: flow
+                subject: flow,
             });
         }
     }
