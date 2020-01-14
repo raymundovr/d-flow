@@ -3,7 +3,7 @@ import EventEmitter = require('events');
 import Flow from '../flow/flow';
 
 class FlowEventEmitter extends EventEmitter {
-    create(definition: any): void {
+    public create(definition: any): void {
         try {
             const flow = Engine.create(definition);
             this.emit('flow-created', flow);
@@ -16,7 +16,7 @@ class FlowEventEmitter extends EventEmitter {
         }
     }
 
-    start(flow: Flow, data: any): void {
+    public start(flow: Flow, data: any): void {
         try {
             this.emit('flow-started', Engine.start(flow, data));
         } catch (ex) {
@@ -28,7 +28,7 @@ class FlowEventEmitter extends EventEmitter {
         }
     }
 
-    submit(flow: Flow, data: any, stepDefinitionId: string): void {
+    public submit(flow: Flow, data: any, stepDefinitionId: string): void {
         try {
             this.emit('flow-step-submitted', Engine.submit(flow, data, stepDefinitionId));
         } catch (ex) {
