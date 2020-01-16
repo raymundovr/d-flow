@@ -1,4 +1,4 @@
-import * as Engine from "../src/flow/flow-engine";
+import * as Engine from "../src/engine/flow-engine";
 import FlowDefinition from "../src/flow/flow-definition";
 import { FlowStatus } from "../src/flow/flow-status";
 import DataInputStep from "../src/step/data-input-step";
